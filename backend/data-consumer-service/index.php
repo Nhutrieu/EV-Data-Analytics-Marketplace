@@ -47,6 +47,37 @@ case 'analytics_data':
     }
     break;
 
+// 4. Purchase API
+case 'purchase':
+    require_once $baseDir . '/api/controllers/PurchaseController.php';
+    $purchaseController = new PurchaseController();
+
+    // Nếu có id => xem purchase
+    if (isset($_GET['id'])) {
+        $purchaseController->viewPurchase($_GET['id']);
+    }
+    // Nếu POST để tạo purchase
+    elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $input = json_decode(file_get_contents('php://input'), true);
+        $user_id = $input['user_id'] ?? null;
+        $dataset_id = $input['dataset_id'] ?? null;
+        $type = $input['type'] ?? null;
+        $price = $input['price'] ?? null;
+
+        if ($user_id && $dataset_id && $type && $price) {
+            $purchaseController->createPurchase($user_id, $dataset_id, $type, $price);
+        } else {
+            echo json_encode(["success" => false, "message" => "Thiếu dữ liệu tạo purchase"]);
+        }
+    }
+    // GET tất cả purchase của user
+    elseif (isset($_GET['user_id'])) {
+        $purchaseController->listUserPurchases($_GET['user_id']);
+    }
+    else {
+        echo json_encode(["success" => false, "message" => "Route not found"]);
+    }
+    break;
 
     default:
         http_response_code(404);

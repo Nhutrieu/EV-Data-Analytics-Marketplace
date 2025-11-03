@@ -165,7 +165,6 @@
                         <div class="profile-info">
                             <h2>Nguyễn Văn A</h2>
                             <p>nguyenvana@example.com</p>
-                            <p class="profile-tier">Premium Member</p>
                         </div>
                     </div>
                 </div>
@@ -173,38 +172,27 @@
                 <div class="account-sections">
                     <div class="account-card">
                         <h3>Gói đã mua</h3>
-                        <div class="purchase-list">
-                            <div class="purchase-item">
-                                <span>EV Charging Network 2024</span>
-                                <span class="purchase-date">Mua: 15/10/2024</span>
-                            </div>
-                            <div class="purchase-item">
-                                <span>Battery Performance Data</span>
-                                <span class="purchase-date">Mua: 10/10/2024</span>
-                            </div>
+                        <div class="purchase-list" id="purchaseList">
+                            <!-- Các mục lịch sử sẽ được render ở đây -->
+                            <!-- Ví dụ tĩnh:
+            <div class="purchase-item">
+                <span>EV Charging Network 2024</span>
+                <span class="purchase-date">Mua: 15/10/2024</span>
+            </div>
+            -->
                         </div>
                     </div>
-
-                    <div class="account-card">
-                        <h3>Thống kê sử dụng</h3>
-                        <div class="usage-stats">
-                            <div class="usage-item">
-                                <span>API Calls:</span>
-                                <span>12,450 / 50,000</span>
-                            </div>
-                            <div class="usage-item">
-                                <span>Storage:</span>
-                                <span>2.5 GB / 10 GB</span>
-                            </div>
-                            <div class="usage-item">
-                                <span>Downloads:</span>
-                                <span>45 / 100</span>
-                            </div>
-                        </div>
+                </div>
+                <div class="account-card">
+                    <div class="usage-item">
+                        <span>Downloads:</span>
+                        <span></span>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+    </div>
     </div>
 
     <!-- Cart Modal -->
@@ -243,10 +231,9 @@
 
     <!-- Toast Notification -->
     <div class="toast" id="toast"></div>
-
     <script src="/EV-Data-Analytics-Marketplace/public/js/consumer.js"></script>
     <script src="/EV-Data-Analytics-Marketplace/public/js/analytics.js"></script>
-
+    <script src="/EV-Data-Analytics-Marketplace/public/js/purchase.js"></script>
 
 </body>
 

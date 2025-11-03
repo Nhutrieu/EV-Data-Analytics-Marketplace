@@ -233,6 +233,11 @@ async function viewDetails(id) {
         showToast("🛒 Đã thêm vào giỏ");
         document.getElementById('detailModal').classList.remove('active');
     }
+    document.getElementById('detailModal').classList.add('active');
+
+    // Gọi để kiểm tra purchase và hiển thị nút Tải xuống
+    handleModalDetail(pkg.id);
+
 }
 
 // ===========================
@@ -348,10 +353,12 @@ async function checkoutCart() {
             body: JSON.stringify({
                 amount: totalAmount,
                 order_id: "ORDER_" + Date.now(),
-                order_desc: "Thanh toán gói dữ liệu EV",
+                order_desc: JSON.stringify(selectedItems), // ✅ gửi luôn chi tiết giỏ hàng
                 order_type: "EV_DATA"
             })
-        });
+
+        })
+
         const data = await res.json();
         if (data && data.paymentUrl) window.location.href = data.paymentUrl;
         else showToast("❌ Không tạo được URL thanh toán");
@@ -378,4 +385,21 @@ function switchPage(page) {
     document.querySelectorAll('.nav-btn').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.page === page);
     });
+}
+async function accessDataset(datasetId) {
+    try {
+        const res = await fetch(`/EV-Data-Analytics-Marketplace/backend/data-consumer-service/api/data_access.php?dataset_id=${datasetId}`, {
+            credentials: 'include'
+        });
+        const data = await res.json();
+        if (data.success) {
+            console.log("Dữ liệu từ API bên thứ 3:", data);
+            showToast("✅ Dữ liệu đã sẵn sàng");
+        } else {
+            showToast("❌ " + data.message);
+        }
+    } catch (err) {
+        console.error(err);
+        showToast("❌ Lỗi khi truy cập dữ liệu");
+    }
 }
