@@ -1,63 +1,41 @@
 <?php
-// ===============================================
-// File: modules/PaymentModule.php
-// ===============================================
-
-require_once __DIR__ . '/../classes/Payment.php';
-
 class PaymentModule {
+    private $clientId;
+    private $apiKey;
 
-    /**
-     * Xử lý tạo URL thanh toán qua VNPAY
-     * @param string $orderId    Mã đơn hàng
-     * @param float  $amount     Số tiền thanh toán (VND)
-     * @param string $orderInfo  Nội dung đơn hàng
-     * @return array             Kết quả [success, paymentUrl hoặc error]
-     */
-    public static function processPayment($orderId, $amount, $orderInfo) {
-        try {
-            // Kiểm tra dữ liệu đầu vào
-            if (empty($amount) || !is_numeric($amount) || $amount <= 0) {
-                return [
-                    'success' => false,
-                    'message' => 'Số tiền thanh toán không hợp lệ.'
-                ];
-            }
+    public function __construct($clientId, $apiKey) {
+        $this->clientId = $clientId;
+        $this->apiKey = $apiKey;
+    }
 
-            // Tạo đối tượng Payment
-            $payment = new Payment();
+    public function createPayOSSQR($orderId, $amount, $accountNumber, $accountName, $bankCode) {
+        $payload = [
+            "accountNumber" => $accountNumber,
+            "accountName" => $accountName,
+            "bankCode" => $bankCode,
+            "amount" => $amount,
+            "orderCode" => $orderId,
+            "description" => "Thanh toan don #{$orderId}"
+        ];
 
-            // Gán thông tin đơn hàng
-            $payment->orderId   = $orderId ?: 'ORDER_' . time();
-            $payment->amount    = (int)$amount;
-            $payment->orderInfo = $orderInfo ?: 'Thanh toán gói dữ liệu EV Marketplace';
+        $ch = curl_init("https://api.payoss.vn/v1/qrcode/create");
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            "Content-Type: application/json",
+            "Client-ID: {$this->clientId}",
+            "API-Key: {$this->apiKey}"
+        ]);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-            // Gọi hàm tạo URL thanh toán
-            $url = $payment->createPaymentUrl();
+        $res = curl_exec($ch);
+        $err = curl_error($ch);
+        curl_close($ch);
 
-            if (!$url) {
-                return [
-                    'success' => false,
-                    'message' => 'Không thể tạo URL thanh toán.'
-                ];
-            }
-
-            // Trả về kết quả thành công
-            return [
-                'success' => true,
-                'paymentUrl' => $url,
-                'data' => [
-                    'orderId' => $payment->orderId,
-                    'amount' => $payment->amount,
-                    'orderInfo' => $payment->orderInfo
-                ]
-            ];
-
-        } catch (Exception $e) {
-            return [
-                'success' => false,
-                'message' => 'Lỗi xử lý thanh toán: ' . $e->getMessage()
-            ];
+        if($err) {
+            return ["error" => $err];
         }
+
+        return json_decode($res, true); // QR thật
     }
 }

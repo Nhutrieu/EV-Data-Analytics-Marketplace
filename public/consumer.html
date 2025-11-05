@@ -151,6 +151,22 @@
                     <canvas id="co2Chart"></canvas>
                 </div>
             </div>
+            <!-- AI Chat Button -->
+            <div id="ai-chat-btn">💬</div>
+
+            <!-- AI Chat Popup -->
+            <div id="ai-chat-popup">
+                <div class="ai-header">
+                    <span>AI Assistant</span>
+                    <button id="ai-close-btn">✖</button>
+                </div>
+                <div id="ai-messages"></div>
+                <div class="ai-input">
+                    <input id="aiUserInput" type="text" placeholder="Nhập câu hỏi...">
+                    <button id="aiSendBtn">Gửi</button>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -234,6 +250,8 @@
     <script src="/EV-Data-Analytics-Marketplace/public/js/consumer.js"></script>
     <script src="/EV-Data-Analytics-Marketplace/public/js/analytics.js"></script>
     <script src="/EV-Data-Analytics-Marketplace/public/js/purchase.js"></script>
+    <script>const USER_ID = 4; const USER_LOGGED_IN = true;</script>
+
 
 </body>
 

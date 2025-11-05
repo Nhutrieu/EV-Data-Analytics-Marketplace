@@ -78,6 +78,25 @@ case 'purchase':
         echo json_encode(["success" => false, "message" => "Route not found"]);
     }
     break;
+    // 5. Payment API
+case 'payment':
+    require_once $baseDir . '/classes/Database.php';
+    $db = Database::getConnection();
+    require_once $baseDir . '/api/controllers/PaymentController.php';
+    $paymentController = new PaymentController($db);
+
+    $action = $_GET['action'] ?? '';
+
+    if ($action === 'create' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+        $paymentController->create();
+    } elseif ($action === 'check') {
+        $paymentController->checkPayment();
+    } else {
+        echo json_encode(["success" => false, "message" => "Hành động thanh toán không hợp lệ"]);
+    }
+    break;
+
+
 
     default:
         http_response_code(404);

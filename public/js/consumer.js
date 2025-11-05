@@ -1,3 +1,4 @@
+const USER_ID = 4;
 const API_BASE = "http://localhost/EV-Data-Analytics-Marketplace/backend/data-consumer-service/index.php?page=datasets";
 let packagesData = [];
 let cart = [];
@@ -341,28 +342,51 @@ function removeFromCart(cartId) {
 // ===========================
 // Thanh toán VNPay
 // ===========================
+// ===========================
+// Thanh toán VietQR (ngân hàng cá nhân)
+// ===========================
 async function checkoutCart() {
     const selectedItems = cart.filter(i => i.selected);
-    if (!selectedItems.length) { showToast("Giỏ hàng trống ❌"); return; }
+    if (!selectedItems.length) { alert("Giỏ hàng trống"); return; }
+
     const totalAmount = selectedItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
 
-    try {
-        const res = await fetch("/EV-Data-Analytics-Marketplace/backend/data-consumer-service/vnpay_php/vnpay_create_payment.php", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                amount: totalAmount,
-                order_id: "ORDER_" + Date.now(),
-                order_desc: JSON.stringify(selectedItems), // ✅ gửi luôn chi tiết giỏ hàng
-                order_type: "EV_DATA"
-            })
+    // Tài khoản thật đã liên kết với PayOSS
+    const accountNumber = "0352790904";
+    const accountName = "PHAM THI NHU TRIEU";
+    const bankCode = "MB";
 
-        })
+    const res = await fetch("/EV-Data-Analytics-Marketplace/backend/data-consumer-service/index.php?page=payment&action=create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id: USER_ID, items: selectedItems, totalAmount, accountNumber, accountName, bankCode })
+    });
 
-        const data = await res.json();
-        if (data && data.paymentUrl) window.location.href = data.paymentUrl;
-        else showToast("❌ Không tạo được URL thanh toán");
-    } catch (err) { console.error(err); showToast("❌ Lỗi khi kết nối VNPay"); }
+    const data = await res.json();
+    if (!data.success) { alert(data.message); return; }
+
+    const qr = data.qr;
+    const modal = document.createElement("div");
+    modal.innerHTML = `
+        <div style="background:#fff;padding:20px;border-radius:12px;text-align:center;">
+            <h3>💳 Quét QR để thanh toán</h3>
+            <img src="${qr.qrCodeUrl}" style="max-width:100%;margin:10px 0;">
+            <p>Số tiền: ${qr.amount.toLocaleString()} VNĐ</p>
+            <button onclick="this.closest('div').remove()">Đóng</button>
+        </div>
+    `;
+    document.body.appendChild(modal);
+
+    // Polling check payment
+    const interval = setInterval(async () => {
+        const check = await fetch(`/EV-Data-Analytics-Marketplace/backend/data-consumer-service/index.php?page=payment&action=check&order_id=${data.order_id}`);
+        const statusData = await check.json();
+        if (statusData.success && statusData.paid) {
+            clearInterval(interval);
+            alert("✅ Thanh toán thành công!");
+            modal.remove();
+        }
+    }, 3000);
 }
 
 // ===========================
@@ -402,4 +426,93 @@ async function accessDataset(datasetId) {
         console.error(err);
         showToast("❌ Lỗi khi truy cập dữ liệu");
     }
+} let aiChartInstance;
+
+function initAIChat() {
+    const chatBtn = document.getElementById('ai-chat-btn');
+    const chatPopup = document.getElementById('ai-chat-popup');
+    const closeBtn = document.getElementById('ai-close-btn');
+    const inputEl = document.getElementById('aiUserInput');
+    const sendBtn = document.getElementById('aiSendBtn');
+    const messagesEl = document.getElementById('ai-messages');
+
+    chatBtn.addEventListener('click', () => {
+        chatPopup.style.display = chatPopup.style.display === 'flex' ? 'none' : 'flex';
+    });
+    closeBtn.addEventListener('click', () => chatPopup.style.display = 'none');
+    sendBtn.addEventListener('click', sendAIMessage);
+    inputEl.addEventListener('keypress', e => { if (e.key === 'Enter') sendAIMessage(); });
+
+    function addMessage(sender, text, type = 'ai') {
+        const p = document.createElement('div');
+        p.className = `msg ${type}`;
+        p.innerHTML = `<strong>${sender}:</strong> ${text}`;
+        messagesEl.appendChild(p);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    async function sendAIMessage() {
+        const msg = inputEl.value.trim();
+        if (!msg) return;
+        addMessage('Bạn', msg, 'user');
+        inputEl.value = '';
+
+        const loadingEl = document.createElement('div');
+        loadingEl.className = 'msg ai';
+        loadingEl.innerHTML = '<em>Đang trả lời...</em>';
+        messagesEl.appendChild(loadingEl);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+
+        try {
+            const res = await fetch('/EV-Data-Analytics-Marketplace/backend/data-consumer-service/api/ai-chat.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: msg, user_id: USER_ID })
+            });
+
+            const text = await res.text();
+            let data;
+            try {
+                data = JSON.parse(text);
+            } catch (e) {
+                console.error('JSON parse error', e, text);
+                loadingEl.innerHTML = '❌ Lỗi response server';
+                return;
+            }
+
+            messagesEl.removeChild(loadingEl);
+            addMessage('AI', data.reply?.text || 'AI chưa trả lời được');
+
+            if (data.reply?.chartData && Object.keys(data.reply.chartData).length) {
+                renderChart(data.reply.chartData.labels, data.reply.chartData.datasets);
+            }
+
+            if (data.reply?.alerts) {
+                data.reply.alerts.forEach(a => addMessage('⚠️ Cảnh báo', a, 'alert'));
+            }
+
+        } catch (err) {
+            console.error(err);
+            messagesEl.removeChild(loadingEl);
+            addMessage('AI', '❌ Lỗi kết nối server');
+        }
+    }
+
+    function renderChart(labels, datasets) {
+        const ctx = document.getElementById('aiChart').getContext('2d');
+        if (aiChartInstance) aiChartInstance.destroy();
+        aiChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: { labels, datasets },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: true } },
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+    }
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (document.getElementById('analytics-page')) initAIChat();
+});
