@@ -10,7 +10,7 @@ var_dump($input);
 // ==========================
 // Cấu hình
 // ==========================
-$CHECKSUM_KEY = "4fd99a4e99c0de621e3a11d69d54b447fc76bf8f61fef9ac0080432f1ef46c2e"; // Thay bằng checksum key thật
+$CHECKSUM_KEY = ""; // Thay bằng checksum key thật
 $LOG_FILE = __DIR__ . '/payos_webhook.log';
 
 // ==========================
