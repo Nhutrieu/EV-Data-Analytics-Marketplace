@@ -1,0 +1,52 @@
+version: "3.9"
+
+services:
+  # ✅ Auth Service
+  auth-service:
+    build: ./auth-service
+    container_name: auth-service
+    ports:
+      - "8001:8001"
+    networks:
+      - ev_network
+    depends_on:
+      - mysql
+
+  # ✅ Gateway PHP-FPM
+  gateway-php:
+    build: ./gateway
+    container_name: gateway-php
+    networks:
+      - ev_network
+    depends_on:
+      - mysql
+
+  # ✅ Gateway Nginx
+  gateway-nginx:
+    image: nginx:latest
+    container_name: gateway-nginx
+    ports:
+      - "8000:80"   # 👉 expose port 8000 outside
+    volumes:
+      - ./gateway:/var/www
+      - ./gateway/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - gateway-php
+    networks:
+      - ev_network
+
+  # ✅ MySQL
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-ev
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: ev_data_analytics_marketplace
+    ports:
+      - "3307:3306"
+    networks:
+      - ev_network
+
+networks:
+  ev_network:
+    driver: bridge
