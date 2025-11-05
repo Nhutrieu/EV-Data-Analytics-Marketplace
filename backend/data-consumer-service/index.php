@@ -9,7 +9,6 @@ $publicDir = realpath($baseDir . '/../../public');
 
 switch ($page) {
 
-    // 1. Consumer UI
     case 'consumer':
         include $publicDir . '/consumer.html';
         break;
