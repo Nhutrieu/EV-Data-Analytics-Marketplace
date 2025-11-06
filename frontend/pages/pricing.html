@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EV Data Marketplace - Chính sách & Giá</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">⚡ EV DATA</div>
+                <h2>Data Provider Portal</h2>
+            </div>
+            <ul class="sidebar-nav">
+                <li><a href="dashboard.html" class="nav-link"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+                <li><a href="data.html" class="nav-link"><i class="fas fa-database"></i> Quản lý Dữ liệu</a></li>
+                <li><a href="pricing.html" class="nav-link active"><i class="fas fa-tag"></i> Chính sách & Giá</a></li>
+                <li><a href="revenue.html" class="nav-link"><i class="fas fa-money-bill-wave"></i> Doanh thu</a></li>
+                <li><a href="privacy.html" class="nav-link"><i class="fas fa-shield-alt"></i> Bảo mật</a></li>
+                <li><a href="settings.html" class="nav-link"><i class="fas fa-cog"></i> Cài đặt</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="content-header">
+                <div class="header-left">
+                    <h1>Chính sách & Giá</h1>
+                    <p>Thiết lập mô hình định giá và điều khoản sử dụng</p>
+                </div>
+                <div class="header-right">
+                    <div class="user-info" id="user-info-dropdown">
+                    <div class="user-avatar" id="user-avatar">E</div>
+                    <span class="user-name" id="user-company-name">EV Data Corp</span>
+                    <i class="fas fa-chevron-down"></i>
+                        
+                        <!-- Dropdown menu -->
+                        <div class="user-dropdown" id="user-dropdown">
+                            <div class="dropdown-item" onclick="showProfile()">
+                                <i class="fas fa-user"></i>
+                                <span>Hồ sơ</span>
+                            </div>
+                            <div class="dropdown-item" onclick="showSettings()">
+                                <i class="fas fa-cog"></i>
+                                <span>Cài đặt</span>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <div class="dropdown-item logout" onclick="logout()">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Đăng xuất</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-area">
+                <!-- Giới thiệu -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Chính sách Giá</div>
+                    </div>
+                    <div style="padding: 1rem;">
+                        <div style="background: rgba(37, 99, 235, 0.1); padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                            <ul style="color: var(--gray-light); margin: 0; padding-left: 1.5rem;">
+                                <li><strong>Tiết kiệm thời gian</strong> - Không cần nhập giá cho từng dữ liệu</li>
+                                <li><strong>Thống nhất giá cả</strong> - Tránh nhầm lẫn khi nhập giá</li>
+                                <li><strong>Chiến lược rõ ràng</strong> - Có chính sách giá nhất quán</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Thiết lập Giá Mặc định -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Thiết lập Giá Mặc định</div>
+                    </div>
+                    <form id="pricing-form">
+                        <div class="form-group">
+                            <label class="form-label">Mô hình Định giá Mặc định *</label>
+                            <select id="pricing-model" class="form-control" required>
+                                <option value="">Chọn mô hình định giá</option>
+                                <option value="per-download" selected>Theo lượt tải</option>
+                                <option value="subscription">Theo gói thuê bao</option>
+                                <option value="capacity">Theo dung lượng dữ liệu</option>
+                                <option value="api">Truy cập API</option>
+                            </select>
+                            <small style="color: var(--gray-light); margin-top: 0.25rem; display: block;">
+                                Khi thêm dữ liệu mới, hệ thống sẽ tự động chọn mô hình này
+                            </small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Giá Mặc định (VND) *</label>
+                            <input type="number" id="price-value" class="form-control" value="500000" placeholder="Nhập giá mặc định" required>
+                            <small style="color: var(--gray-light); margin-top: 0.25rem; display: block;">
+                                Khi thêm dữ liệu mới, hệ thống sẽ tự động điền giá này
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Đơn vị Tiền tệ</label>
+                            <select class="form-control">
+                                <option value="VND" selected>Việt Nam Đồng (VND)</option>
+                                <option value="USD">US Dollar (USD)</option>
+                                <option value="EUR">Euro (EUR)</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Lưu Chính sách Giá Mặc định
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Điều khoản Sử dụng -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Điều khoản Sử dụng Dữ liệu</div>
+                    </div>
+                    <form id="terms-form">
+                        <div class="form-group">
+                            <label class="form-label">Quyền Sử dụng Mặc định *</label>
+                            <select class="form-control" required>
+                                <option value="">Chọn quyền sử dụng</option>
+                                <option value="research">Chỉ cho mục đích nghiên cứu</option>
+                                <option value="commercial" selected>Cho mục đích thương mại</option>
+                                <option value="internal">Chỉ sử dụng nội bộ</option>
+                                <option value="extended">Sử dụng mở rộng và phân phối lại</option>
+                            </select>
+                            <small style="color: var(--gray-light); margin-top: 0.25rem; display: block;">
+                                Quy định cách thức người mua được phép sử dụng dữ liệu của bạn
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Giấy phép Dữ liệu Mặc định</label>
+                            <textarea class="form-control" rows="4" placeholder="Nhập điều khoản giấy phép sử dụng dữ liệu...">Dữ liệu được cung cấp bởi EV Data Analytics Marketplace. Người mua được phép sử dụng dữ liệu cho mục đích đã được chỉ định. Không được phép phân phối lại, bán lại, hoặc sử dụng cho mục đực bất hợp pháp. Bản quyền dữ liệu thuộc về EV Data Corp.</textarea>
+                            <small style="color: var(--gray-light); margin-top: 0.25rem; display: block;">
+                                Điều khoản này sẽ được áp dụng cho tất cả dữ liệu của bạn
+                            </small>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-file-contract"></i> Lưu Điều khoản Sử dụng
+                        </button>
+                    </form>
+                </div>
+
+    <script src="../js/main.js"></script>
+
+</html>
