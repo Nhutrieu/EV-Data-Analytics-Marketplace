@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EV Data Marketplace - Dashboard</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">⚡ EV DATA</div>
+                <h2>Data Provider Portal</h2>
+            </div>
+            <ul class="sidebar-nav">
+                <li><a href="dashboard.html" class="nav-link active"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+                <li><a href="data.html" class="nav-link"><i class="fas fa-database"></i> Quản lý Dữ liệu</a></li>
+                <li><a href="pricing.html" class="nav-link"><i class="fas fa-tag"></i> Chính sách & Giá</a></li>
+                <li><a href="revenue.html" class="nav-link"><i class="fas fa-money-bill-wave"></i> Doanh thu</a></li>
+                <li><a href="privacy.html" class="nav-link"><i class="fas fa-shield-alt"></i> Bảo mật</a></li>
+                <li><a href="settings.html" class="nav-link"><i class="fas fa-cog"></i> Cài đặt</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="content-header">
+                <div class="header-left">
+                    <h1>Dashboard</h1>
+                    <p>Tổng quan hoạt động dữ liệu</p>
+                </div>
+                <div class="header-right">
+                    <div class="user-info" id="user-info-dropdown">
+                    <div class="user-avatar" id="user-avatar">E</div>
+                    <span class="user-name" id="user-company-name">EV Data Corp</span>
+                    <i class="fas fa-chevron-down"></i>                  <i class="fas fa-chevron-down"></i>
+                        
+                        <!-- Dropdown menu -->
+                        <div class="user-dropdown" id="user-dropdown">
+                            <div class="dropdown-item" onclick="showProfile()">
+                                <i class="fas fa-user"></i>
+                                <span>Hồ sơ</span>
+                            </div>
+                            <div class="dropdown-item" onclick="showSettings()">
+                                <i class="fas fa-cog"></i>
+                                <span>Cài đặt</span>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <div class="dropdown-item logout" onclick="logout()">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Đăng xuất</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-area">
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-downloads">0</div>
+                        <div class="stat-label">Tổng lượt tải</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-revenue">0</div>
+                        <div class="stat-label">Tổng doanh thu</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-datasets">0</div>
+                        <div class="stat-label">Bộ dữ liệu</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-users">0</div>
+                        <div class="stat-label">Người dùng</div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Thao tác nhanh</div>
+                    </div>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                        <a href="data.html" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Thêm dữ liệu mới
+                        </a>
+                        <a href="pricing.html" class="btn btn-secondary">
+                            <i class="fas fa-tag"></i> Quản lý giá
+                        </a>
+                        <a href="revenue.html" class="btn btn-secondary">
+                            <i class="fas fa-chart-bar"></i> Xem báo cáo
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Hoạt động gần đây</div>
+                    </div>
+                    <div class="activity-list">
+                        <div class="activity-item">
+                            <i class="fas fa-download" style="color: #00d4ff;"></i>
+                            <div>
+                                <div style="font-weight: 600;">Tải xuống dữ liệu pin</div>
+                                <div style="color: #94a3b8; font-size: 0.9rem;">Công ty ABC - 2 giờ trước</div>
+                            </div>
+                            <div style="color: #00d4ff; font-weight: 600;">+500,000 VND</div>
+                        </div>
+                        <div class="activity-item">
+                            <i class="fas fa-user-plus" style="color: #06b6d4;"></i>
+                            <div>
+                                <div style="font-weight: 600;">Người dùng mới</div>
+                                <div style="color: #94a3b8; font-size: 0.9rem;">Startup XYZ - 5 giờ trước</div>
+                            </div>
+                            <div style="color: #06b6d4; font-weight: 600;">+2,000,000 VND</div>
+                        </div>
+                        <div class="activity-item">
+                            <i class="fas fa-upload" style="color: #eab308;"></i>
+                            <div>
+                                <div style="font-weight: 600;">Tải lên dữ liệu mới</div>
+                                <div style="color: #94a3b8; font-size: 0.9rem;">Hành vi lái xe Q4 - 1 ngày trước</div>
+                            </div>
+                            <div style="color: #eab308; font-weight: 600;">Chờ duyệt</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/main.js"></script>
+</body>
+</html>
