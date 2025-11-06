@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EV Data Marketplace - Doanh thu</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">⚡ EV DATA</div>
+                <h2>Data Provider Portal</h2>
+            </div>
+            <ul class="sidebar-nav">
+                <li><a href="dashboard.html" class="nav-link"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+                <li><a href="data.html" class="nav-link"><i class="fas fa-database"></i> Quản lý Dữ liệu</a></li>
+                <li><a href="pricing.html" class="nav-link"><i class="fas fa-tag"></i> Chính sách & Giá</a></li>
+                <li><a href="revenue.html" class="nav-link active"><i class="fas fa-money-bill-wave"></i> Doanh thu</a></li>
+                <li><a href="privacy.html" class="nav-link"><i class="fas fa-shield-alt"></i> Bảo mật</a></li>
+                <li><a href="settings.html" class="nav-link"><i class="fas fa-cog"></i> Cài đặt</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="content-header">
+                <div class="header-left">
+                    <h1>Doanh thu</h1>
+                    <p>Thống kê và phân tích doanh thu</p>
+                </div>
+                <div class="header-right">
+                    <div class="user-info" id="user-info-dropdown">
+                        <div class="user-avatar" id="user-avatar">E</div>
+                        <span class="user-name" id="user-company-name">EV Data Corp</span>
+                        <i class="fas fa-chevron-down"></i>
+                        
+                        <!-- Dropdown menu -->
+                        <div class="user-dropdown" id="user-dropdown">
+                            <div class="dropdown-item" onclick="showProfile()">
+                                <i class="fas fa-user"></i>
+                                <span>Hồ sơ</span>
+                            </div>
+                            <div class="dropdown-item" onclick="showSettings()">
+                                <i class="fas fa-cog"></i>
+                                <span>Cài đặt</span>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <div class="dropdown-item logout" onclick="logout()">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Đăng xuất</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-area">
+                <div id="transaction-list"></div>
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="revenue-total">245M VND</div>
+                        <div class="stat-label">Tổng doanh thu</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="revenue-month">28M VND</div>
+                        <div class="stat-label">Tháng này</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="revenue-growth" style="color: #22c55e;">+12%</div>
+                        <div class="stat-label">Tăng trưởng</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="avg-transaction">850K VND</div>
+                        <div class="stat-label">Giao dịch trung bình</div>
+                    </div>
+                </div>
+
+                <!-- Biểu đồ doanh thu -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Doanh thu 12 tháng gần nhất</div>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <select id="chart-type" class="form-control" style="width: 150px;" onchange="updateChartType()">
+                                <option value="line">Biểu đồ đường</option>
+                                <option value="bar">Biểu đồ cột</option>
+                            </select>
+                            <button class="btn btn-outline" onclick="exportChart()">
+                                <i class="fas fa-download"></i> Export
+                            </button>
+                        </div>
+                    </div>
+                    <div style="padding: 1rem;">
+                        <canvas id="revenueChart" height="300"></canvas>
+                    </div>
+                </div>
+
+                <!-- Top dữ liệu bán chạy -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Top dữ liệu bán chạy</div>
+                    </div>
+                    <div style="padding: 1rem;">
+                        <canvas id="topProductsChart" height="250"></canvas>
+                    </div>
+                </div>
+
+                <!-- Lịch sử giao dịch -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Lịch sử giao dịch gần đây</div>
+                        <a href="#" class="btn btn-outline">Xem tất cả</a>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Ngày</th>
+                                <th>Bộ dữ liệu</th>
+                                <th>Khách hàng</th>
+                                <th>Loại</th>
+                                <th>Số tiền</th>
+                                <th>Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>15/10/2024</td>
+                                <td>Dữ liệu pin EV Model X</td>
+                                <td>Công ty ABC</td>
+                                <td>Theo lượt tải</td>
+                                <td style="color: var(--accent); font-weight: 600;">500,000 VND</td>
+                                <td><span class="status-active">Thành công</span></td>
+                            </tr>
+                            <tr>
+                                <td>12/10/2024</td>
+                                <td>Hành vi lái xe Hà Nội</td>
+                                <td>Công ty XYZ</td>
+                                <td>Thuê bao</td>
+                                <td style="color: var(--accent); font-weight: 600;">1,200,000 VND</td>
+                                <td><span class="status-active">Thành công</span></td>
+                            </tr>
+                            <tr>
+                                <td>10/10/2024</td>
+                                <td>Giao dịch V2G 2024</td>
+                                <td>Startup EV</td>
+                                <td>Theo lượt tải</td>
+                                <td style="color: var(--accent); font-weight: 600;">750,000 VND</td>
+                                <td><span class="status-pending">Đang xử lý</span></td>
+                            </tr>
+                            <tr>
+                                <td>05/10/2024</td>
+                                <td>Hành vi lái xe Hà Nội</td>
+                                <td>Research Lab</td>
+                                <td>Theo lượt tải</td>
+                                <td style="color: var(--accent); font-weight: 600;">300,000 VND</td>
+                                <td><span class="status-active">Thành công</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script>
+    // Biến toàn cục cho biểu đồ
+    let revenueChart, topProductsChart;
+
+    // Dữ liệu mẫu cho biểu đồ
+    const revenueData = {
+        labels: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'],
+        datasets: [{
+            label: 'Doanh thu (triệu VND)',
+            data: [45, 52, 38, 65, 72, 68, 80, 95, 88, 105, 98, 120],
+            borderColor: '#00d4ff',
+            backgroundColor: 'rgba(0, 212, 255, 0.1)',
+            borderWidth: 3,
+            fill: true,
+            tension: 0.4
+        }]
+    };
+
+    const topProductsData = {
+        labels: ['Dữ liệu pin', 'Hành vi lái xe', 'Trạm sạc', 'V2G', 'Khác'],
+        datasets: [{
+            label: 'Doanh thu (triệu VND)',
+            data: [85, 62, 45, 28, 15],
+            backgroundColor: [
+                '#2563eb',
+                '#06b6d4',
+                '#00d4ff',
+                '#3b82f6',
+                '#64748b'
+            ],
+            borderColor: '#0f172a',
+            borderWidth: 2
+        }]
+    };
+
+    // Khởi tạo biểu đồ
+    function initCharts() {
+        // Biểu đồ doanh thu
+        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        revenueChart = new Chart(revenueCtx, {
+            type: 'line',
+            data: revenueData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#94a3b8',
+                            font: {
+                                size: 12
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                        titleColor: '#fff',
+                        bodyColor: '#fff',
+                        borderColor: '#00d4ff',
+                        borderWidth: 1
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            color: 'rgba(100, 116, 139, 0.2)'
+                        },
+                        ticks: {
+                            color: '#94a3b8'
+                        }
+                    },
+                    y: {
+                        grid: {
+                            color: 'rgba(100, 116, 139, 0.2)'
+                        },
+                        ticks: {
+                            color: '#94a3b8',
+                            callback: function(value) {
+                                return value + 'M';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Biểu đồ top sản phẩm
+        const topProductsCtx = document.getElementById('topProductsChart').getContext('2d');
+        topProductsChart = new Chart(topProductsCtx, {
+            type: 'bar',
+            data: topProductsData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                        titleColor: '#fff',
+                        bodyColor: '#fff'
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            color: 'rgba(100, 116, 139, 0.2)'
+                        },
+                        ticks: {
+                            color: '#94a3b8'
+                        }
+                    },
+                    y: {
+                        grid: {
+                            color: 'rgba(100, 116, 139, 0.2)'
+                        },
+                        ticks: {
+                            color: '#94a3b8',
+                            callback: function(value) {
+                                return value + 'M';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // Cập nhật loại biểu đồ
+    function updateChartType() {
+        const type = document.getElementById('chart-type').value;
+        revenueChart.config.type = type;
+        revenueChart.update();
+    }
+
+    // Export biểu đồ
+    function exportChart() {
+        const link = document.createElement('a');
+        link.download = 'doanh-thu-ev-data.png';
+        link.href = revenueChart.toBase64Image();
+        link.click();
+    }
+
+    // Khởi tạo khi trang load
+    document.addEventListener('DOMContentLoaded', function() {
+        initCharts();
+    });
+    </script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  fetch('http://localhost:3000/api/dashboard/transactions')
+    .then(res => res.json())
+    .then(data => {
+      const container = document.getElementById('transaction-list');
+      if (!container) return;
+
+      container.innerHTML = data.map(tx => `
+        <div class="transaction-item">
+          <h3>${tx.dataset_name}</h3>
+          <p>Người mua: ${tx.buyer}</p>
+          <p>Số tiền: ${new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND'
+          }).format(tx.amount)}</p>
+          <p>Phương thức: ${tx.method} | Trạng thái: ${tx.status}</p>
+          <p><small>${new Date(tx.timestamp).toLocaleString('vi-VN')}</small></p>
+        </div>
+      `).join('');
+    })
+    .catch(err => {
+      console.error('Lỗi khi tải danh sách giao dịch:', err);
+    });
+});
+</script>
+
+</body>
+</html>
