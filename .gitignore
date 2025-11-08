@@ -1,0 +1,5 @@
+backend/data-consumer-service/payment/
+backend/data-consumer-service/api/Ai-chat.php
+backend/data-consumer-service/vendor
+composer.lock
+backend/data-consumer-service/composer.json
