@@ -340,54 +340,97 @@ function removeFromCart(cartId) {
 }
 
 // ===========================
-// Thanh toán VNPay
+// Thanh toán qua PayOS (1 dataset / lần thanh toán)
 // ===========================
 // ===========================
-// Thanh toán VietQR (ngân hàng cá nhân)
+// Thanh toán qua PayOS cho nhiều item trong giỏ
 // ===========================
 async function checkoutCart() {
+    console.log(">>> checkoutCart CLICKED");
+
+    if (typeof cart === "undefined") {
+        alert("Biến cart chưa được khai báo.");
+        return;
+    }
+
     const selectedItems = cart.filter(i => i.selected);
-    if (!selectedItems.length) { alert("Giỏ hàng trống"); return; }
+    console.log("selectedItems:", selectedItems);
 
-    const totalAmount = selectedItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
+    if (!selectedItems.length) {
+        alert("Giỏ hàng trống hoặc chưa chọn item nào để thanh toán.");
+        return;
+    }
 
-    // Tài khoản thật đã liên kết với PayOSS
-    const accountNumber = "0352790904";
-    const accountName = "PHAM THI NHU TRIEU";
-    const bankCode = "MB";
+    const userId = typeof USER_ID !== "undefined" ? USER_ID : null;
+    console.log("USER_ID =", userId);
 
-    const res = await fetch("/EV-Data-Analytics-Marketplace/backend/data-consumer-service/index.php?page=payment&action=create", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user_id: USER_ID, items: selectedItems, totalAmount, accountNumber, accountName, bankCode })
-    });
+    if (!userId) {
+        alert("Không xác định được user. Hãy chắc chắn đã set USER_ID.");
+        return;
+    }
 
-    const data = await res.json();
-    if (!data.success) { alert(data.message); return; }
+    const items = selectedItems.map(i => ({
+        dataset_id: i.id,
+        type: i.selectedType,   // "Mua" / "Thuê tháng" / Thuê năm
+        price: i.price,
+        quantity: i.quantity || 1
+    }));
+    const totalAmount = items.reduce(
+        (sum, it) => sum + it.price * it.quantity,
+        0
+    );
 
-    const qr = data.qr;
-    const modal = document.createElement("div");
-    modal.innerHTML = `
-        <div style="background:#fff;padding:20px;border-radius:12px;text-align:center;">
-            <h3>💳 Quét QR để thanh toán</h3>
-            <img src="${qr.qrCodeUrl}" style="max-width:100%;margin:10px 0;">
-            <p>Số tiền: ${qr.amount.toLocaleString()} VNĐ</p>
-            <button onclick="this.closest('div').remove()">Đóng</button>
-        </div>
-    `;
-    document.body.appendChild(modal);
+    console.log("items gửi lên:", items);
+    console.log("totalAmount gửi lên:", totalAmount);
 
-    // Polling check payment
-    const interval = setInterval(async () => {
-        const check = await fetch(`/EV-Data-Analytics-Marketplace/backend/data-consumer-service/index.php?page=payment&action=check&order_id=${data.order_id}`);
-        const statusData = await check.json();
-        if (statusData.success && statusData.paid) {
-            clearInterval(interval);
-            alert("✅ Thanh toán thành công!");
-            modal.remove();
+    try {
+        const res = await fetch(
+            "/EV-Data-Analytics-Marketplace/backend/data-consumer-service/payment/create_payment.php",
+            {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    user_id: userId,
+                    items: items,
+                    totalAmount: totalAmount
+                })
+            }
+        );
+
+        console.log("res.status =", res.status);
+        const data = await res.json();
+        console.log("create_payment response:", data);
+
+        if (!data.success) {
+            alert(data.message || "Không tạo được link thanh toán PayOS.");
+            return;
         }
-    }, 3000);
+
+        const checkoutUrl =
+            data.checkout_url ||
+            (data.payos_raw && data.payos_raw.checkoutUrl);
+
+        console.log("checkoutUrl resolved:", checkoutUrl);
+
+        if (!checkoutUrl) {
+            alert("Không tìm thấy checkout_url trong response.");
+            return;
+        }
+
+        // Không alert nữa, đi thẳng qua PayOS
+        // Mở tab mới:
+        window.open(checkoutUrl, "_blank");
+
+        // Hoặc nếu bạn muốn chuyển ngay tab hiện tại thì dùng:
+        // window.location.href = checkoutUrl;
+
+    } catch (err) {
+        console.error("checkoutCart error:", err);
+        alert("Lỗi kết nối tới server khi tạo thanh toán PayOS.");
+    }
 }
+
+
 
 // ===========================
 // Toast
