@@ -1,0 +1,38 @@
+# docker-compose.yml
+version: '3.8'
+services:
+  provider-service:
+    build: .
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=mysql
+      - DB_USER=root
+      - DB_PASSWORD=ev_data_password
+      - DB_NAME=ev_data_marketplace
+      - JWT_SECRET=your_jwt_secret
+    depends_on:
+      - mysql
+    networks:
+      - ev-network
+
+  mysql:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=ev_data_password
+      - MYSQL_DATABASE=ev_data_marketplace
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - ev-network
+
+volumes:
+  mysql_data:
+
+networks:
+  ev-network:
+    driver: bridge
