@@ -1,4 +1,5 @@
-let aiChartInstance;
+// Dùng global để không bị "Identifier ... has already been declared"
+window.aiChartInstance = window.aiChartInstance || null;
 
 function initAIChat() {
     const chatBtn = document.getElementById('ai-chat-btn');
@@ -8,24 +9,36 @@ function initAIChat() {
     const sendBtn = document.getElementById('aiSendBtn');
     const messagesEl = document.getElementById('ai-messages');
 
+    if (!chatBtn || !chatPopup || !closeBtn || !inputEl || !sendBtn || !messagesEl) {
+        console.warn('AI chat elements not found on this page');
+        return;
+    }
+
     chatBtn.addEventListener('click', () => {
-        chatPopup.style.display = chatPopup.style.display === 'flex' ? 'none' : 'flex';
+        chatPopup.style.display = (chatPopup.style.display === 'flex' ? 'none' : 'flex');
     });
-    closeBtn.addEventListener('click', () => chatPopup.style.display = 'none');
+
+    closeBtn.addEventListener('click', () => {
+        chatPopup.style.display = 'none';
+    });
+
     sendBtn.addEventListener('click', sendAIMessage);
-    inputEl.addEventListener('keypress', e => { if (e.key === 'Enter') sendAIMessage(); });
+    inputEl.addEventListener('keypress', e => {
+        if (e.key === 'Enter') sendAIMessage();
+    });
 
     function addMessage(sender, text, type = 'ai') {
-        const p = document.createElement('div');
-        p.className = `msg ${type}`;
-        p.innerHTML = `<strong>${sender}:</strong> ${text}`;
-        messagesEl.appendChild(p);
+        const div = document.createElement('div');
+        div.className = `msg ${type}`;
+        div.innerHTML = `<strong>${sender}:</strong> ${text}`;
+        messagesEl.appendChild(div);
         messagesEl.scrollTop = messagesEl.scrollHeight;
     }
 
     async function sendAIMessage() {
         const msg = inputEl.value.trim();
         if (!msg) return;
+
         addMessage('Bạn', msg, 'user');
         inputEl.value = '';
 
@@ -36,7 +49,8 @@ function initAIChat() {
         messagesEl.scrollTop = messagesEl.scrollHeight;
 
         try {
-            const res = await fetch('/EV-Data-Analytics-Marketplace/backend/data-consumer-service/api/ai-chat.php', {
+            // 🔁 Gọi backend trong Docker – dùng path tuyệt đối
+            const res = await fetch('/backend/data-consumer-service/api/ai-chat.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ message: msg, user_id: USER_ID })
@@ -56,11 +70,13 @@ function initAIChat() {
             addMessage('AI', data.reply?.text || 'AI chưa trả lời được');
 
             if (data.reply?.chartData && Object.keys(data.reply.chartData).length) {
-                renderChart(data.reply.chartData.labels, data.reply.chartData.datasets);
+                renderAIChart(data.reply.chartData.labels, data.reply.chartData.datasets);
             }
 
             if (data.reply?.alerts) {
-                data.reply.alerts.forEach(a => addMessage('⚠️ Cảnh báo', a, 'alert'));
+                data.reply.alerts.forEach(a =>
+                    addMessage('⚠️ Cảnh báo', a, 'alert')
+                );
             }
 
         } catch (err) {
@@ -70,10 +86,17 @@ function initAIChat() {
         }
     }
 
-    function renderChart(labels, datasets) {
-        const ctx = document.getElementById('aiChart').getContext('2d');
-        if (aiChartInstance) aiChartInstance.destroy();
-        aiChartInstance = new Chart(ctx, {
+    function renderAIChart(labels, datasets) {
+        const canvas = document.getElementById('aiChart');
+        if (!canvas) return;
+
+        const ctx = canvas.getContext('2d');
+
+        if (window.aiChartInstance) {
+            window.aiChartInstance.destroy();
+        }
+
+        window.aiChartInstance = new Chart(ctx, {
             type: 'line',
             data: { labels, datasets },
             options: {
@@ -86,5 +109,8 @@ function initAIChat() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    if (document.getElementById('analytics-page')) initAIChat();
+    // Chỉ init ở trang có analytics
+    if (document.getElementById('analytics-page')) {
+        initAIChat();
+    }
 });

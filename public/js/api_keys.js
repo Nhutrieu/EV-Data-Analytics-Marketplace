@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const apiUrl =
-        "http://localhost/EV-Data-Analytics-Marketplace/backend/data-consumer-service/index.php?page=api_key";
+    // Gọi qua router backend trong Docker
+    const apiUrl = "/backend/data-consumer-service/index.php?page=api_key";
+
     const userId = window.USER_ID || 1;
 
     const listContainer = document.getElementById("apiKeyList");
@@ -16,8 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 listContainer.innerHTML = "";
 
                 if (!data.success) {
-                    listContainer.innerHTML = `<p>Lỗi tải API key: ${data.message || ""
-                        }</p>`;
+                    listContainer.innerHTML = `<p>Lỗi tải API key: ${data.message || ""}</p>`;
                     return;
                 }
 
@@ -74,9 +74,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     alert("Không thể tạo API key: " + data.message);
                 }
             })
-            .catch((err) =>
-                console.error("Lỗi tạo API key:", err)
-            );
+            .catch((err) => {
+                console.error("Lỗi tạo API key:", err);
+            });
     });
 
     // 🔹 Xoá API key hiện tại của user
@@ -98,9 +98,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     loadApiKeys();
                 }
             })
-            .catch((err) =>
-                console.error("Lỗi xoá API key:", err)
-            );
+            .catch((err) => {
+                console.error("Lỗi xoá API key:", err);
+            });
     }
 
     // Gọi lần đầu

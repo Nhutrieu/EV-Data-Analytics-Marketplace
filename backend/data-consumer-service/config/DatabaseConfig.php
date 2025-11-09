@@ -1,10 +1,8 @@
 <?php
 class DatabaseConfig {
     public static function getConnection() {
-        // Trỏ đúng file .env trong cùng thư mục
-     $envPath = __DIR__ . '/../.env'; // đi 1 cấp lên từ config → đến data-consumer-service
- // trỏ ra khỏi config folder lên data-consumer-service
-
+        // Trỏ đúng file .env (đi lên 1 cấp từ thư mục config)
+        $envPath = __DIR__ . '/../.env';
 
         if (!file_exists($envPath)) {
             die("File .env không tồn tại ở $envPath");
@@ -12,13 +10,16 @@ class DatabaseConfig {
 
         $env = parse_ini_file($envPath);
 
-        $host = $env['DB_HOST'] ?? 'localhost';
+        // ⚠️ Ưu tiên lấy từ .env, nếu không có thì fallback về config Docker
+        $host = $env['DB_HOST'] ?? 'db';             // MẶC ĐỊNH: db (Docker service)
         $db   = $env['DB_NAME'] ?? 'ev_analytics';
-        $user = $env['DB_USER'] ?? 'root';
-        $pass = $env['DB_PASS'] ?? '';
+        $user = $env['DB_USER'] ?? 'ev_user';
+        $pass = $env['DB_PASS'] ?? 'ev_pass';
+        $port = $env['DB_PORT'] ?? '3306';
 
         try {
-            $conn = new PDO("mysql:host=$host;dbname=$db;charset=utf8mb4", $user, $pass);
+            $dsn = "mysql:host=$host;port=$port;dbname=$db;charset=utf8mb4";
+            $conn = new PDO($dsn, $user, $pass);
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             return $conn;
         } catch (PDOException $e) {

@@ -6,9 +6,9 @@
 // Lấy danh sách purchases của user hiện tại
 async function loadUserPurchases() {
     try {
-        // Lấy theo USER_ID đang dùng bên frontend
+        // Gọi thẳng vào router backend trong Docker
         const res = await fetch(
-            `/EV-Data-Analytics-Marketplace/backend/data-consumer-service/index.php?page=purchase&user_id=${USER_ID}`,
+            `/backend/data-consumer-service/index.php?page=purchase&user_id=${USER_ID}`,
             {
                 credentials: "include",
             }
@@ -142,7 +142,7 @@ async function handleModalDetail(datasetId) {
 function downloadDataset(datasetId, type) {
     // Backend download + kiểm tra quyền bằng session / purchases
     window.location.href =
-        `/EV-Data-Analytics-Marketplace/backend/data-consumer-service/api/download_dataset.php?dataset_id=${datasetId}`;
+        `/backend/data-consumer-service/api/download_dataset.php?dataset_id=${datasetId}`;
 }
 
 // ===========================
@@ -151,7 +151,7 @@ function downloadDataset(datasetId, type) {
 async function getOrCreateApiKeyFromServer() {
     try {
         const res = await fetch(
-            "/EV-Data-Analytics-Marketplace/backend/data-consumer-service/api/get_api_key.php",
+            "/backend/data-consumer-service/api/get_api_key.php",
             {
                 method: "GET",
                 credentials: "include",
@@ -211,7 +211,7 @@ async function accessDatasetWithApiKey(datasetId) {
 
     try {
         const res = await fetch(
-            `/EV-Data-Analytics-Marketplace/backend/data-consumer-service/api/data_access.php?dataset_id=${datasetId}`,
+            `/backend/data-consumer-service/api/data_access.php?dataset_id=${datasetId}`,
             {
                 method: "GET",
                 headers: {

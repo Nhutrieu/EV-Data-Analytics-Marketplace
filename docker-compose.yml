@@ -1,0 +1,44 @@
+version: '3.9'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ev-app
+    ports:
+      - "8080:80" # http://localhost:8080
+    volumes:
+      - .:/var/www/html # sửa code là thấy liền
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    container_name: ev-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: ev_analytics
+      MYSQL_USER: ev_user
+      MYSQL_PASSWORD: ev_pass
+    ports:
+      - "3307:3306" # MySQL host: 127.0.0.1:3307
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: ev-phpmyadmin
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: root123
+    ports:
+      - "8081:80" # http://localhost:8081
+    depends_on:
+      - db
+
+volumes:
+  db_data:
