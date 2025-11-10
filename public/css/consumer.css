@@ -1205,6 +1205,7 @@ canvas {
         font-size: 24px;
     }
 }
+/* Danh sách key */
 .api-key-list {
     margin-top: 15px;
     display: flex;
@@ -1212,40 +1213,174 @@ canvas {
     gap: 10px;
 }
 
+/* Box 1 API key */
 .api-key-row {
-    background: #f4f6fa;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 10px;
-    transition: 0.3s;
+    background: #0f172a;
+    border: 1px solid rgba(148, 163, 184, 0.5);
+    border-radius: 12px;
+    padding: 10px 12px;
+    transition: 0.15s ease;
+    font-size: 0.9rem;
+    color: #e5e7eb;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.6);
 }
 
 .api-key-row:hover {
-    background: #e9f0ff;
+    border-color: #60a5fa;
+    box-shadow: 0 12px 28px rgba(37, 99, 235, 0.4);
+    background: radial-gradient(circle at top left,
+        rgba(37, 99, 235, 0.15),
+        #020617 70%);
 }
 
-.btn {
-    background-color: #007bff;
-    color: white;
+/* Dòng đầu: Key + mắt */
+.api-key-row-main {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+/* Bên trái: "Key:" + value */
+.api-key-left {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    flex: 1;
+    min-width: 0;
+}
+
+.api-key-left strong {
+    color: #9ca3af;
+    font-weight: 600;
+}
+
+/* Giá trị API key */
+.api-key-value {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+        "Liberation Mono", "Courier New", monospace;
+    font-weight: 600;
+    color: #f9fafb;
+    word-break: break-all; /* key dài tự xuống dòng, không bị mất đuôi */
+}
+
+/* Các dòng info bên dưới (Trạng thái, Ngày tạo) */
+.api-key-row > div {
+    margin-top: 2px;
+    color: #9ca3af;
+}
+
+.api-key-row > div strong {
+    color: #e5e7eb;
+    font-weight: 500;
+}
+
+/* Nút mắt ẩn/hiện */
+.toggle-api-visibility {
     border: none;
-    padding: 8px 15px;
-    border-radius: 8px;
+    background: #020617;
+    color: #9ca3af;
     cursor: pointer;
+    padding: 4px 6px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 0 1px rgba(148, 163, 184, 0.5);
+    transition: background 0.15s ease, color 0.15s ease,
+        transform 0.1s ease, box-shadow 0.15s ease;
 }
 
-.btn:hover {
-    background-color: #0056b3;
+.toggle-api-visibility:hover {
+    background: #1d4ed8;
+    color: #e5e7eb;
+    box-shadow: 0 0 0 1px rgba(129, 140, 248, 0.9);
+    transform: translateY(-0.5px);
 }
+
+.toggle-api-visibility:active {
+    transform: translateY(0.5px) scale(0.97);
+}
+
+/* Icon Material Symbols (mắt) */
+.material-symbols-outlined {
+    font-family: "Material Symbols Outlined";
+    font-weight: normal;
+    font-style: normal;
+    font-size: 18px;
+    line-height: 1;
+    letter-spacing: normal;
+    white-space: nowrap;
+    -webkit-font-feature-settings: "liga";
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Nút Xóa API key – chỉ dùng cho phần key */
 .delete-api-btn {
-    background: #dc3545;
-    color: white;
+    background: linear-gradient(135deg, #ef4444, #b91c1c);
+    color: #fee2e2;
     border: none;
-    padding: 5px 10px;
-    border-radius: 6px;
+    padding: 5px 12px;
+    border-radius: 999px;
     cursor: pointer;
-    margin-top: 5px;
+    margin-top: 8px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow:
+        0 10px 24px rgba(248, 113, 113, 0.35),
+        0 0 0 1px rgba(248, 113, 113, 0.25);
+    transition: transform 0.15s ease, box-shadow 0.15s ease,
+        filter 0.15s ease;
+}
+
+.delete-api-btn::before {
+    content: "🗑";
 }
 
 .delete-api-btn:hover {
-    background: #c82333;
+    filter: brightness(1.05);
+    transform: translateY(-1px);
+    box-shadow:
+        0 14px 30px rgba(248, 113, 113, 0.45),
+        0 0 0 1px rgba(239, 68, 68, 0.35);
+}
+
+.delete-api-btn:active {
+    transform: translateY(0);
+    box-shadow:
+        0 8px 18px rgba(248, 113, 113, 0.3),
+        0 0 0 1px rgba(185, 28, 28, 0.4);
+}
+
+/* Chỉ style nút "Tạo API Key mới" – không ảnh hưởng nút .btn khác */
+#createApiKeyBtn {
+    background: #2563eb;
+    color: #f9fafb;
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+    transition: background 0.15s ease, transform 0.1s ease,
+        box-shadow 0.15s ease;
+}
+
+#createApiKeyBtn:hover {
+    background: #1d4ed8;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.45);
+}
+
+#createApiKeyBtn:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 10px rgba(37, 99, 235, 0.35);
 }

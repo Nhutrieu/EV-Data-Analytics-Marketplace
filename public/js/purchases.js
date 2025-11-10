@@ -151,7 +151,7 @@ function downloadDataset(datasetId, type) {
 async function getOrCreateApiKeyFromServer() {
     try {
         const res = await fetch(
-            "/backend/data-consumer-service/api/get_api_key.php",
+            "/backend/data-consumer-service/api/get_key.php",
             {
                 method: "GET",
                 credentials: "include",

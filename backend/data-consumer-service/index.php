@@ -141,32 +141,30 @@ switch ($page) {
             ]);
         }
 
-        // Lấy key của user
-        elseif ($action === 'list' && $user_id) {
-            $stmt = $db->prepare("
-                SELECT id, api_key, status, created_at
-                FROM api_keys
-                WHERE user_id = :uid
-            ");
-            $stmt->execute([':uid' => $user_id]);
-            $key = $stmt->fetch(PDO::FETCH_ASSOC);
+       elseif ($action === 'list' && $user_id) {
+    $stmt = $db->prepare("
+        SELECT id, api_key, status, created_at
+        FROM api_keys
+        WHERE user_id = :uid
+    ");
+    $stmt->execute([':uid' => $user_id]);
+    $key = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if ($key) {
-                $masked = substr($key['api_key'], 0, 10) . str_repeat('*', 10);
-                $key['api_key'] = $masked;
+    if ($key) {
+        // Không che nữa, trả full api_key cho frontend
+        echo json_encode([
+            "success" => true,
+            "data"    => $key
+        ]);
+    } else {
+        echo json_encode([
+            "success" => true,
+            "data"    => null,
+            "message" => "Chưa có API key."
+        ]);
+    }
+}
 
-                echo json_encode([
-                    "success" => true,
-                    "data"    => $key
-                ]);
-            } else {
-                echo json_encode([
-                    "success" => true,
-                    "data"    => null,
-                    "message" => "Chưa có API key."
-                ]);
-            }
-        }
 
         // Xóa key hiện tại của user
         elseif ($action === 'delete' && $user_id) {
