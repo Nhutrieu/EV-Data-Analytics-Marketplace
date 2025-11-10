@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="css/style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
+
 <body>
     <div class="app-container">
         <!-- Sidebar -->
@@ -16,7 +18,6 @@
                 <h2>Data Provider Portal</h2>
             </div>
             <ul class="sidebar-nav">
-                <li><a href="dashboard.html" class="nav-link"><i class="fas fa-chart-line"></i> Dashboard</a></li>
                 <li><a href="data.html" class="nav-link"><i class="fas fa-database"></i> Quản lý Dữ liệu</a></li>
                 <li><a href="pricing.html" class="nav-link"><i class="fas fa-tag"></i> Chính sách & Giá</a></li>
                 <li><a href="revenue.html" class="nav-link"><i class="fas fa-money-bill-wave"></i> Doanh thu</a></li>
@@ -32,30 +33,7 @@
                     <h1>Cài đặt Tài khoản</h1>
                     <p>Quản lý thông tin tài khoản và cài đặt hệ thống</p>
                 </div>
-                <div class="header-right">
-                    <div class="user-info" id="user-info-dropdown">
-                        <div class="user-avatar" id="user-avatar">E</div>
-                        <span class="user-name" id="user-company-name">EV Data Corp</span>
-                        <i class="fas fa-chevron-down"></i>
-                        
-                        <!-- Dropdown menu -->
-                        <div class="user-dropdown" id="user-dropdown">
-                            <div class="dropdown-item" onclick="showProfile()">
-                                <i class="fas fa-user"></i>
-                                <span>Hồ sơ</span>
-                            </div>
-                            <div class="dropdown-item" onclick="showSettings()">
-                                <i class="fas fa-cog"></i>
-                                <span>Cài đặt</span>
-                            </div>
-                            <div class="dropdown-divider"></div>
-                            <div class="dropdown-item logout" onclick="logout()">
-                                <i class="fas fa-sign-out-alt"></i>
-                                <span>Đăng xuất</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
             </header>
 
             <div class="content-area">
@@ -74,9 +52,10 @@
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                             <div class="form-group">
                                 <label class="form-label">Email liên hệ *</label>
-                                <input type="email" id="company-email" class="form-control" value="contact@evdatacorp.com" required>
+                                <input type="email" id="company-email" class="form-control"
+                                    value="contact@evdatacorp.com" required>
                             </div>
-                            
+
                             <div class="form-group">
                                 <label class="form-label">Số điện thoại</label>
                                 <input type="tel" id="company-phone" class="form-control" value="+84 123 456 789">
@@ -95,7 +74,8 @@
 
                         <div class="form-group">
                             <label class="form-label">Mô tả công ty</label>
-                            <textarea id="company-description" class="form-control" rows="3" placeholder="Mô tả về công ty của bạn...">Cung cấp dữ liệu EV chất lượng cao cho thị trường</textarea>
+                            <textarea id="company-description" class="form-control" rows="3"
+                                placeholder="Mô tả về công ty của bạn...">Cung cấp dữ liệu EV chất lượng cao cho thị trường</textarea>
                         </div>
 
                         <button type="submit" class="btn btn-primary">
@@ -119,12 +99,14 @@
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                             <div class="form-group">
                                 <label class="form-label">Mật khẩu mới</label>
-                                <input type="password" id="new-password" class="form-control" placeholder="Nhập mật khẩu mới">
+                                <input type="password" id="new-password" class="form-control"
+                                    placeholder="Nhập mật khẩu mới">
                             </div>
-                            
+
                             <div class="form-group">
                                 <label class="form-label">Xác nhận mật khẩu</label>
-                                <input type="password" id="confirm-password" class="form-control" placeholder="Xác nhận mật khẩu">
+                                <input type="password" id="confirm-password" class="form-control"
+                                    placeholder="Xác nhận mật khẩu">
                             </div>
                         </div>
 
@@ -140,14 +122,6 @@
                         <div class="card-title">Cài đặt Hệ thống</div>
                     </div>
                     <form id="system-settings-form">
-                        <div class="form-group">
-                            <label class="form-label">Ngôn ngữ</label>
-                            <select class="form-control" id="language">
-                                <option value="vi" selected>Tiếng Việt</option>
-                                <option value="en">English</option>
-                            </select>
-                        </div>
-
                         <div class="form-group">
                             <label class="form-label">Múi giờ</label>
                             <select class="form-control" id="timezone">
@@ -181,47 +155,6 @@
                     </form>
                 </div>
 
-                <!-- Thông báo -->
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">Cài đặt Thông báo</div>
-                    </div>
-                    <form id="notification-form">
-                        <div class="form-group">
-                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                                <input type="checkbox" id="email-notifications" checked>
-                                <span>Thông báo qua Email</span>
-                            </label>
-                            <small style="color: var(--gray-light); display: block; margin-top: 0.25rem;">
-                                Nhận thông báo về giao dịch và hoạt động mới
-                            </small>
-                        </div>
-
-                        <div class="form-group">
-                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                                <input type="checkbox" id="security-notifications" checked>
-                                <span>Thông báo bảo mật</span>
-                            </label>
-                            <small style="color: var(--gray-light); display: block; margin-top: 0.25rem;">
-                                Cảnh báo về các vấn đề bảo mật và truy cập
-                            </small>
-                        </div>
-
-                        <div class="form-group">
-                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                                <input type="checkbox" id="weekly-reports">
-                                <span>Báo cáo hàng tuần</span>
-                            </label>
-                            <small style="color: var(--gray-light); display: block; margin-top: 0.25rem;">
-                                Tổng hợp hoạt động và doanh thu hàng tuần
-                            </small>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save"></i> Lưu Cài đặt Thông báo
-                        </button>
-                    </form>
-                </div>
 
                 <!-- Khu vực nguy hiểm -->
                 <div class="card" style="border-color: #ef4444;">
@@ -238,7 +171,7 @@
                                 <i class="fas fa-sign-out-alt"></i> Đăng xuất Tất cả
                             </button>
                         </div>
-                        
+
                         <div style="border-top: 1px solid #334155; padding-top: 1rem;">
                             <h4 style="color: #ef4444; margin-bottom: 0.5rem;">Xóa tài khoản</h4>
                             <p style="color: var(--gray-light); margin-bottom: 1rem;">
@@ -256,4 +189,6 @@
 
     <script src="js/main.js"></script>
     <script src="js/api.js"></script>
+    <script src="js/setting.js"></script>
+
 </html>
