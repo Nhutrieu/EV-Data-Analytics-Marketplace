@@ -1,7 +1,3 @@
-// ===========================
-// CONFIG
-// ===========================
-const USER_ID = 4;
 
 // Gọi datasets qua router backend (Docker)
 const API_BASE = "/backend/data-consumer-service/index.php?page=datasets";

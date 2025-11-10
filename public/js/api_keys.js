@@ -2,8 +2,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // Gọi qua router backend trong Docker
     const apiUrl = "/backend/data-consumer-service/index.php?page=api_key";
 
-    const userId = window.USER_ID || 1;
-
     const listContainer = document.getElementById("apiKeyList");
     const createBtn = document.getElementById("createApiKeyBtn");
 
@@ -19,15 +17,16 @@ document.addEventListener("DOMContentLoaded", () => {
         return k.slice(0, visible) + " " + maskedPart;
     }
 
-    // 🔹 Load API key hiện tại của user
+    // 🔹 Load API key hiện tại của user đang login (server tự biết qua session)
     function loadApiKeys() {
-        fetch(`${apiUrl}&action=list&user_id=${userId}`)
+        fetch(`${apiUrl}&action=list`)
             .then((res) => res.json())
             .then((data) => {
                 listContainer.innerHTML = "";
 
                 if (!data.success) {
-                    listContainer.innerHTML = `<p>Lỗi tải API key: ${data.message || ""}</p>`;
+                    listContainer.innerHTML =
+                        `<p>Lỗi tải API key: ${data.message || ""}</p>`;
                     return;
                 }
 
@@ -101,7 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 🔹 Tạo API key mới
     createBtn.addEventListener("click", () => {
-        fetch(`${apiUrl}&action=create&user_id=${userId}`)
+        fetch(`${apiUrl}&action=create`)
             .then((res) => res.json())
             .then((data) => {
                 if (data.success) {
@@ -126,7 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 🔹 Xoá API key hiện tại của user
     function deleteApiKey() {
-        fetch(`${apiUrl}&action=delete&user_id=${userId}`)
+        fetch(`${apiUrl}&action=delete`)
             .then((res) => res.json())
             .then((data) => {
                 alert(data.message || "Đã xử lý yêu cầu xoá API key.");

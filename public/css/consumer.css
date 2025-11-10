@@ -1384,3 +1384,60 @@ canvas {
     transform: translateY(0);
     box-shadow: 0 3px 10px rgba(37, 99, 235, 0.35);
 }
+.purchase-list {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.purchase-empty {
+    color: #9ca3af;
+    font-size: 0.9rem;
+}
+
+/* 1 item lịch sử mua */
+.purchase-item {
+    background: #0f172a;
+    border-radius: 10px;
+    border: 1px solid rgba(148, 163, 184, 0.5);
+    padding: 10px 12px;
+    font-size: 0.85rem;
+    color: #e5e7eb;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.7);
+}
+
+/* Header: tên dataset + loại gói */
+.purchase-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.purchase-title {
+    font-weight: 600;
+}
+
+/* Badge loại gói (Mua / Thuê tháng / Thuê năm) */
+.purchase-type {
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: rgba(59, 130, 246, 0.18);
+    color: #bfdbfe;
+}
+
+/* Dòng thông tin phụ */
+.purchase-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    font-size: 0.78rem;
+    color: #9ca3af;
+}
+
+.purchase-meta strong {
+    color: #e5e7eb;
+    font-weight: 500;
+}

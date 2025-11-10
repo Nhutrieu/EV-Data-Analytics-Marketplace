@@ -111,10 +111,22 @@ switch ($page) {
             ]);
         }
         break;
-
-    // 5. API Key management
+      // 5. API Key management
     case 'api_key':
+        session_start();
         header('Content-Type: application/json; charset=utf-8');
+
+        // Phải login mới dùng được API key
+        if (!isset($_SESSION['user_id'])) {
+            http_response_code(401);
+            echo json_encode([
+                "success" => false,
+                "message" => "Chưa login"
+            ]);
+            break;
+        }
+
+        $user_id = (int) $_SESSION['user_id'];
 
         require_once $baseDir . '/classes/Database.php';
         require_once $baseDir . '/classes/ApiKey.php';
@@ -123,51 +135,52 @@ switch ($page) {
         $api = new ApiKey($db);
 
         $action  = $_GET['action'] ?? '';
-        $user_id = isset($_GET['user_id']) ? (int) $_GET['user_id'] : null;
 
-        // Tạo mới API key (xóa key cũ trước)
-        if ($action === 'create' && $user_id) {
+        // 🔹 Tạo API key mới cho user đang login
+        if ($action === 'create') {
 
-            // Xóa key cũ nếu có
+            // Xoá hết key cũ của user (nếu bạn muốn revoke luôn)
             $stmt = $db->prepare("DELETE FROM api_keys WHERE user_id = :uid");
             $stmt->execute([':uid' => $user_id]);
 
             // Tạo key mới
             $key = $api->createKey($user_id);
+
             echo json_encode([
                 "success" => true,
-                "message" => "Tạo API key mới thành công. Key cũ đã bị xóa.",
+                "message" => "Tạo API key mới thành công.",
                 "api_key" => $key
             ]);
         }
 
-       elseif ($action === 'list' && $user_id) {
-    $stmt = $db->prepare("
-        SELECT id, api_key, status, created_at
-        FROM api_keys
-        WHERE user_id = :uid
-    ");
-    $stmt->execute([':uid' => $user_id]);
-    $key = $stmt->fetch(PDO::FETCH_ASSOC);
+        // 🔹 Lấy key hiện tại của user (1 key mới nhất)
+        elseif ($action === 'list') {
+            $stmt = $db->prepare("
+                SELECT id, api_key, status, created_at
+                FROM api_keys
+                WHERE user_id = :uid
+                ORDER BY created_at DESC
+                LIMIT 1
+            ");
+            $stmt->execute([':uid' => $user_id]);
+            $key = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($key) {
-        // Không che nữa, trả full api_key cho frontend
-        echo json_encode([
-            "success" => true,
-            "data"    => $key
-        ]);
-    } else {
-        echo json_encode([
-            "success" => true,
-            "data"    => null,
-            "message" => "Chưa có API key."
-        ]);
-    }
-}
+            if ($key) {
+                echo json_encode([
+                    "success" => true,
+                    "data"    => $key   // trả FULL api_key
+                ]);
+            } else {
+                echo json_encode([
+                    "success" => true,
+                    "data"    => null,
+                    "message" => "Chưa có API key."
+                ]);
+            }
+        }
 
-
-        // Xóa key hiện tại của user
-        elseif ($action === 'delete' && $user_id) {
+        // 🔹 Xoá tất cả key của user đang login
+        elseif ($action === 'delete') {
             $stmt = $db->prepare("DELETE FROM api_keys WHERE user_id = :uid");
             $ok   = $stmt->execute([':uid' => $user_id]);
 
@@ -182,27 +195,41 @@ switch ($page) {
         else {
             echo json_encode([
                 "success" => false,
-                "message" => "Hành động không hợp lệ hoặc thiếu user_id."
+                "message" => "Hành động không hợp lệ."
             ]);
         }
+
         break;
+  // 6. Payment
+case 'payment':
+    session_start();
+    header('Content-Type: application/json; charset=utf-8');
 
-    // 6. Payment
-    case 'payment':
-        header('Content-Type: application/json; charset=utf-8');
-
-        $action = $_GET['action'] ?? '';
-
-        if ($action === 'create') {
-            require_once $baseDir . '/payment/create_payment.php';
-            // file này tự đọc php://input và echo json
-        } else {
-            echo json_encode([
-                "success" => false,
-                "message" => "Action payment không hợp lệ"
-            ]);
-        }
+    // Bắt buộc phải login
+    if (!isset($_SESSION['user_id'])) {
+        http_response_code(401);
+        echo json_encode([
+            "success" => false,
+            "message" => "Chưa login, không thể tạo thanh toán."
+        ]);
         break;
+    }
+
+    $userId = (int) $_SESSION['user_id'];
+
+    $action = $_GET['action'] ?? '';
+
+    if ($action === 'create') {
+        // Truyền $userId cho file create_payment nếu cần
+        require_once $baseDir . '/payment/create_payment.php';
+    } else {
+        echo json_encode([
+            "success" => false,
+            "message" => "Action payment không hợp lệ"
+        ]);
+    }
+    break;
+
 
     // 7. Default 404
     default:

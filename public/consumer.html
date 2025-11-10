@@ -181,23 +181,22 @@
                     <div class="profile-header">
                         <div class="profile-avatar">👤</div>
                         <div class="profile-info">
-                            <h2>Nguyễn Văn A</h2>
-                            <p>nguyenvana@example.com</p>
+                            <h2>
+                                <?= htmlspecialchars($user['name']) ?>
+                            </h2>
+                            <p>
+                                <?= htmlspecialchars($user['email']) ?>
+                            </p>
                         </div>
                     </div>
                 </div>
+
 
                 <div class="account-sections">
                     <div class="account-card">
                         <h3>Gói đã mua</h3>
                         <div class="purchase-list" id="purchaseList">
                             <!-- Các mục lịch sử sẽ được render ở đây -->
-                            <!-- Ví dụ tĩnh:
-            <div class="purchase-item">
-                <span>EV Charging Network 2024</span>
-                <span class="purchase-date">Mua: 15/10/2024</span>
-            </div>
-            -->
                         </div>
                     </div>
                 </div>
@@ -208,12 +207,7 @@
                         <!-- Danh sách key sẽ được load ở đây -->
                     </div>
                 </div>
-                <div class="account-card">
-                    <div class="usage-item">
-                        <span>Downloads:</span>
-                        <span></span>
-                    </div>
-                </div>
+
             </div>
         </div>
     </div>
@@ -261,6 +255,7 @@
     <script src="js/purchases.js"></script>
     <script src="js/ai-chats.js"></script>
     <script src="js/api_keys.js"></script>
+    <script src="js/account.js"></script>
 
 
 
