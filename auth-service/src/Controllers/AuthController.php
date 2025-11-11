@@ -4,48 +4,96 @@ namespace App\Controllers;
 use App\Models\User;
 use App\Helpers\ResponseHelper;
 use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 
-class AuthController {
-    private $user;
+class AuthController
+{
+    private User $userModel;
+    private string $jwtSecret;
+    private int $jwtExp;
+    private string $iss;
+    private string $aud;
 
-    public function __construct() {
-        $this->user = new User();
+    public function __construct()
+    {
+        $this->userModel = new User();
+        $this->jwtSecret = getenv('JWT_SECRET') ?: 'change_me';
+        $this->jwtExp = (int)(getenv('JWT_EXP') ?: 3600);
+        $this->iss = getenv('JWT_ISSUER') ?: 'http://auth-service';
+        $this->aud = getenv('JWT_AUDIENCE') ?: 'http://ev-data-marketplace';
     }
 
-    public function register() {
-        $email = $_POST["email"] ?? "";
-        $password = $_POST["password"] ?? "";
+    public function register()
+    {
+        $data = ResponseHelper::input();
+        $email = trim($data['email'] ?? '');
+        $password = $data['password'] ?? '';
+        $name = $data['name'] ?? null;
 
-        if (!$email || !$password) {
-            ResponseHelper::json(["error" => "Empty fields"], 400);
+        if (empty($email) || empty($password)) {
+            ResponseHelper::json(['status' => false, 'message' => 'Email và password bắt buộc'], 400);
+            return;
         }
 
-        if ($this->user->findByEmail($email)) {
-            ResponseHelper::json(["error" => "Email exists"], 409);
+        if ($this->userModel->findByEmail($email)) {
+            ResponseHelper::json(['status' => false, 'message' => 'Email đã tồn tại'], 400);
+            return;
         }
 
-        $this->user->register($email, $password);
-        ResponseHelper::json(["message" => "User registered"]);
+        $user = $this->userModel->create($email, $password, $name);
+        ResponseHelper::json(['status' => true, 'message' => 'Đăng ký thành công', 'data' => $user], 201);
     }
 
-    public function login() {
-        $email = $_POST["email"] ?? "";
-        $password = $_POST["password"] ?? "";
+    public function login()
+    {
+        $data = ResponseHelper::input();
+        $email = trim($data['email'] ?? '');
+        $password = $data['password'] ?? '';
 
-        $user = $this->user->findByEmail($email);
-        if (!$user || !password_verify($password, $user["password"])) {
-            ResponseHelper::json(["error" => "Invalid credentials"], 401);
+        if (empty($email) || empty($password)) {
+            ResponseHelper::json(['status' => false, 'message' => 'Email và password bắt buộc'], 400);
+            return;
         }
 
+        $user = $this->userModel->findByEmail($email);
+        if (!$user || !password_verify($password, $user['password_hash'])) {
+            ResponseHelper::json(['status' => false, 'message' => 'Email hoặc password không đúng'], 401);
+            return;
+        }
+
+        $now = time();
         $payload = [
-            "id" => $user["id"],
-            "email" => $email,
-            "iat" => time(),
-            "exp" => time() + 86400
+            'iss' => $this->iss,
+            'aud' => $this->aud,
+            'iat' => $now,
+            'nbf' => $now,
+            'exp' => $now + $this->jwtExp,
+            'data' => [
+                'id' => $user['id'],
+                'email' => $user['email'],
+                'name' => $user['name'] ?? null
+            ]
         ];
 
-        $token = JWT::encode($payload, "SECRET_KEY", 'HS256');
+        $jwt = JWT::encode($payload, $this->jwtSecret, 'HS256');
 
-        ResponseHelper::json(["token" => $token]);
+        ResponseHelper::json([
+            'status' => true,
+            'message' => 'Đăng nhập thành công',
+            'data' => [
+                'token' => $jwt,
+                'expires_in' => $this->jwtExp,
+                'user' => [
+                    'id' => $user['id'],
+                    'email' => $user['email'],
+                    'name' => $user['name'] ?? null
+                ]
+            ]
+        ]);
+    }
+
+    public function profile(array $user)
+    {
+        ResponseHelper::json(['status' => true, 'data' => $user]);
     }
 }

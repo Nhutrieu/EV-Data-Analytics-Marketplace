@@ -1,24 +1,39 @@
 <?php
 namespace App\Config;
 
-use mysqli;
+class Database
+{
+    private static ?\PDO $pdo = null;
 
-class Database {
-    public static function connect() {
-        $conn = new mysqli(
-            "db",                       // Docker service name
-            "root",                     // MySQL user
-            "rootpassword",             // MySQL password
-            "ev_data_analytics_marketplace" // Database name
-        );
+    public static function init(): void
+    {
+        if (self::$pdo !== null) return;
 
-        if ($conn->connect_error) {
-            die(json_encode([
-                "status" => "error",
-                "message" => "DB connect failed: " . $conn->connect_error
-            ]));
+        $host = getenv('DB_HOST') ?: '127.0.0.1';
+        $port = getenv('DB_PORT') ?: '3306';
+        $db   = getenv('DB_DATABASE') ?: 'ev_database';
+        $user = getenv('DB_USERNAME') ?: 'root';
+        $pass = getenv('DB_PASSWORD') ?: '';
+
+        $dsn = "mysql:host={$host};port={$port};dbname={$db};charset=utf8mb4";
+
+        try {
+            self::$pdo = new \PDO($dsn, $user, $pass, [
+                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+                \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
+            ]);
+        } catch (\PDOException $e) {
+            http_response_code(500);
+            echo json_encode(['status' => false, 'message' => 'Database connection error: ' . $e->getMessage()]);
+            exit;
         }
+    }
 
-        return $conn;
+    public static function getConnection(): \PDO
+    {
+        if (self::$pdo === null) {
+            self::init();
+        }
+        return self::$pdo;
     }
 }

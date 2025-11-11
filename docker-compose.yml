@@ -1,37 +1,38 @@
-version: "3.9"
-
 services:
   gateway:
-    build:
-      context: ./gateway
-      dockerfile: Dockerfile
-    volumes:
-      - ./gateway:/app
+    build: ./gateway
+    container_name: ev_gateway
     ports:
-      - "8000:8000"
+      - "8080:80"
+    volumes:
+      - ./gateway:/var/www/html
+    environment:
+      - DB_HOST=host.docker.internal
+      - DB_USER=root
+      - DB_PASS=
+      - DB_NAME=ev_data_analytics_marketplace
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     networks:
-      - app-network
+      - ev_network
 
   auth-service:
-    auth-service:
-    build: ./auth
-    depends_on:
-      - db
-    networks:
-      - app-network
-
-  db:
-    image: mysql:8.0
-    environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: ev_data_analytics_marketplace
-      MYSQL_USER: root
-      MYSQL_PASSWORD: rootpassword
+    build: ./auth-service
+    container_name: ev_auth_service
     ports:
-      - "3306:3306"
+      - "8081:80"
+    volumes:
+      - ./auth-service:/var/www/html
+    environment:
+      - DB_HOST=host.docker.internal
+      - DB_USER=root
+      - DB_PASS=
+      - DB_NAME=ev_data_analytics_marketplace
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     networks:
-      - app-network
+      - ev_network
 
 networks:
-  app-network:
+  ev_network:
     driver: bridge

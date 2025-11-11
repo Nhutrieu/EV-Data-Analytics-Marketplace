@@ -1,8 +1,8 @@
 {
-  "name": "ev/auth-service",
-  "description": "Authentication microservice",
+  "name": "ev-data/auth-service",
   "require": {
-    "firebase/php-jwt": "^6.0"
+    "php": ">=8.0",
+    "firebase/php-jwt": "^6.8"
   },
   "autoload": {
     "psr-4": {
