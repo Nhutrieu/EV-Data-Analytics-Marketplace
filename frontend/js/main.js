@@ -201,7 +201,6 @@ async function loadDatasets() {
         alert("Không tải được danh sách dữ liệu.");
     }
 }
-
 function renderDatasetTable(datasets) {
     const tbody = document.getElementById("data-sources-body");
     if (!tbody) return;
@@ -211,7 +210,7 @@ function renderDatasetTable(datasets) {
     if (!datasets || datasets.length === 0) {
         const tr = document.createElement("tr");
         const td = document.createElement("td");
-        td.colSpan = 7;
+        td.colSpan = 8; // 👈 vì giờ có 8 cột
         td.textContent = "Chưa có dữ liệu nào.";
         td.style.textAlign = "center";
         td.style.color = "#64748b";
@@ -223,18 +222,37 @@ function renderDatasetTable(datasets) {
     datasets.forEach(ds => {
         const tr = document.createElement("tr");
 
+        // Tên bộ dữ liệu
         const tdName = document.createElement("td");
         tdName.textContent = ds.name || "-";
 
+        // Loại dữ liệu
         const tdType = document.createElement("td");
         tdType.textContent = mapType(ds.type);
 
+        // Định dạng (raw / analyzed)
         const tdFormat = document.createElement("td");
         tdFormat.textContent = mapFormat(ds.format);
 
+        // 👇 CỘT FILE NAME MỚI
+        const tdFile = document.createElement("td");
+        if (ds.file_name) {
+            const span = document.createElement("span");
+            span.textContent = ds.file_name;
+            span.style.color = "#38bdf8";
+            span.style.fontSize = "0.9rem";
+            tdFile.appendChild(span);
+        } else {
+            tdFile.textContent = "(chưa upload)";
+            tdFile.style.color = "#64748b";
+            tdFile.style.fontStyle = "italic";
+        }
+
+        // Giá
         const tdPrice = document.createElement("td");
         tdPrice.textContent = formatVND(ds.price);
 
+        // Trạng thái
         const tdStatus = document.createElement("td");
         const status = ds.status || "draft";
         const spanStatus = document.createElement("span");
@@ -242,9 +260,11 @@ function renderDatasetTable(datasets) {
         spanStatus.className = "status-badge status-" + status;
         tdStatus.appendChild(spanStatus);
 
+        // Lượt tải
         const tdDownloads = document.createElement("td");
         tdDownloads.textContent = ds.downloads ?? 0;
 
+        // Thao tác
         const tdActions = document.createElement("td");
         tdActions.style.whiteSpace = "nowrap";
 
@@ -264,9 +284,11 @@ function renderDatasetTable(datasets) {
         tdActions.appendChild(btnEdit);
         tdActions.appendChild(btnDelete);
 
+        // Thứ tự cột phải khớp với <thead>
         tr.appendChild(tdName);
         tr.appendChild(tdType);
         tr.appendChild(tdFormat);
+        tr.appendChild(tdFile);      // 👈 thêm cột file
         tr.appendChild(tdPrice);
         tr.appendChild(tdStatus);
         tr.appendChild(tdDownloads);
@@ -275,6 +297,7 @@ function renderDatasetTable(datasets) {
         tbody.appendChild(tr);
     });
 }
+
 
 async function handleDeleteDataset(id) {
     if (!confirm("Bạn có chắc chắn muốn xoá bộ dữ liệu này?")) return;

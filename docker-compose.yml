@@ -1,38 +1,44 @@
-# docker-compose.yml
-version: '3.8'
-services:
-  provider-service:
-    build: .
-    ports:
-      - "3001:3001"
-    environment:
-      - NODE_ENV=production
-      - DB_HOST=mysql
-      - DB_USER=root
-      - DB_PASSWORD=ev_data_password
-      - DB_NAME=ev_data_marketplace
-      - JWT_SECRET=your_jwt_secret
-    depends_on:
-      - mysql
-    networks:
-      - ev-network
+version: "3.9"
 
-  mysql:
-    image: mysql:8.0
+services:
+  app:
+    build: .
+    container_name: ev_app
     ports:
-      - "3306:3306"
-    environment:
-      - MYSQL_ROOT_PASSWORD=ev_data_password
-      - MYSQL_DATABASE=ev_data_marketplace
+      - "8080:80" # http://localhost:8080
     volumes:
-      - mysql_data:/var/lib/mysql
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-    networks:
-      - ev-network
+      - .:/var/www/html
+    environment:
+      DB_HOST: db
+      DB_NAME: ev_data_marketplace
+      DB_USER: evuser
+      DB_PASS: evpass
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    container_name: ev_db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: ev_data_marketplace
+      MYSQL_USER: evuser
+      MYSQL_PASSWORD: evpass
+    ports:
+      - "3307:3306"
+    volumes:
+      - ev_db_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: ev_phpmyadmin
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: rootpass
+    ports:
+      - "8081:80"
+    depends_on:
+      - db
 
 volumes:
-  mysql_data:
-
-networks:
-  ev-network:
-    driver: bridge
+  ev_db_data:

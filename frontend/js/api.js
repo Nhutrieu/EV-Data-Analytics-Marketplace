@@ -1,7 +1,7 @@
 // frontend/js/api.js
 
 // 🔗 Đường dẫn tuyệt đối tới backend provider service
-const API_BASE = "/EV-Data-Analytics-Marketplace/backend/data-provider-service/index.php";
+const API_BASE = "../backend/data-provider-service/index.php";
 
 /**
  * Lấy danh sách datasets
