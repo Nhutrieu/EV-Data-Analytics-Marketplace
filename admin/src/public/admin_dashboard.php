@@ -1,0 +1,154 @@
+<?php
+require_once '../db.php';
+require_once '../controllers/UserController.php';
+require_once '../controllers/PaymentController.php';
+require_once '../controllers/AnalyticsController.php';
+
+$userCtrl = new UserController($pdo);
+$payCtrl  = new PaymentController($pdo);
+$anCtrl   = new AnalyticsController($pdo);
+
+// 🟢 Xử lý thêm người dùng
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['addUser'])) {
+    $userCtrl->createUser([
+        'name' => $_POST['name'],
+        'email' => $_POST['email'],
+        'password' => password_hash($_POST['password'], PASSWORD_DEFAULT),
+        'role' => $_POST['role']
+    ]);
+    header("Location: ?page=users");
+    exit;
+}
+
+// 🟢 Xử lý xóa người dùng
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteUser'])) {
+    $id = (int)$_POST['delete_id'];
+    $stmt = $pdo->prepare("DELETE FROM users WHERE id = ?");
+    $stmt->execute([$id]);
+    header("Location: ?page=users");
+    exit;
+}
+
+$page = $_GET['page'] ?? 'home';
+?>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Admin Dashboard</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<header>🏛️ Bảng điều khiển Admin - Chợ Dữ Liệu</header>
+
+<div class="sidebar">
+    <h3>⚙️ Chức năng chính</h3>
+    <div class="menu-item <?= $page==='users' ? 'active' : '' ?>" onclick="window.location='?page=users'">👥 Quản lý người dùng</div>
+    
+    <div class="menu-item <?= in_array($page,['transactions','revenues']) ? 'active' : '' ?>" onclick="toggleMenu('payment')">💰 Thanh toán & Doanh thu</div>
+    <div class="submenu" id="submenu-payment" style="<?= in_array($page,['transactions','revenues']) ? 'display:block' : 'display:none' ?>">
+        <a href="?page=transactions" class="<?= $page==='transactions' ? 'active' : '' ?>">Giao dịch</a>
+        <a href="?page=revenues" class="<?= $page==='revenues' ? 'active' : '' ?>">Chia sẻ doanh thu</a>
+    </div>
+
+    <div class="menu-item <?= $page==='analytics' ? 'active' : '' ?>" onclick="window.location='?page=analytics'">📊 Phân tích & Báo cáo</div>
+
+    <!-- ✅ Thêm mục Bảo mật & Quyền riêng tư -->
+    <div class="menu-item <?= $page==='security' ? 'active' : '' ?>" onclick="window.location='?page=security'">🔐 Bảo mật & Quyền riêng tư</div>
+</div>
+
+<div class="content">
+<?php
+switch ($page) {
+    case 'transactions':
+        showTransactions();
+        break;
+
+    case 'revenues':
+        showRevenueShare();
+        break;
+
+    case 'users':
+        echo "<h2>👥 Danh sách người dùng</h2>";
+
+        // === PROVIDERS ===
+        echo "<h3>🏪 Provider (Người cung cấp dữ liệu)</h3>";
+        $providers = $userCtrl->getProviders();
+        echo "<table class='user-table'>
+                <tr><th>ID</th><th>Tên</th><th>Email</th><th>Vai trò</th><th>Hành động</th></tr>";
+        foreach ($providers as $u) {
+            echo "<tr>
+                    <td>{$u['id']}</td>
+                    <td>{$u['name']}</td>
+                    <td>{$u['email']}</td>
+                    <td>{$u['role']}</td>
+                    <td>
+                        <form method='POST' style='display:inline'>
+                            <input type='hidden' name='delete_id' value='{$u['id']}'>
+                            <button type='submit' name='deleteUser' onclick='return confirm(\"Xóa người dùng này?\")'>🗑️</button>
+                        </form>
+                    </td>
+                  </tr>";
+        }
+        echo "</table>";
+
+        // === CONSUMERS ===
+        echo "<h3>👤 Consumer (Người tiêu dùng dữ liệu)</h3>";
+        $consumers = $userCtrl->getConsumers();
+        echo "<table class='user-table'>
+                <tr><th>ID</th><th>Tên</th><th>Email</th><th>Vai trò</th><th>Hành động</th></tr>";
+        foreach ($consumers as $u) {
+            echo "<tr>
+                    <td>{$u['id']}</td>
+                    <td>{$u['name']}</td>
+                    <td>{$u['email']}</td>
+                    <td>{$u['role']}</td>
+                    <td>
+                        <form method='POST' style='display:inline'>
+                            <input type='hidden' name='delete_id' value='{$u['id']}'>
+                            <button type='submit' name='deleteUser' onclick='return confirm(\"Xóa người dùng này?\")'>🗑️</button>
+                        </form>
+                    </td>
+                  </tr>";
+        }
+        echo "</table>";
+
+        // === FORM THÊM NGƯỜI DÙNG ===
+        echo "<hr>";
+        echo "<h3>➕ Thêm người dùng mới</h3>";
+        echo "
+        <form method='POST' class='user-form'>
+            <input type='text' name='name' placeholder='Tên người dùng' required>
+            <input type='email' name='email' placeholder='Email' required>
+            <input type='password' name='password' placeholder='Mật khẩu' required>
+            <select name='role'>
+                <option value='provider'>Provider</option>
+                <option value='consumer'>Consumer</option>
+            </select>
+            <button type='submit' name='addUser'>Thêm</button>
+        </form>";
+        break;
+
+    case 'analytics':
+        include __DIR__ . '/pages/analytics.php';
+        break;
+
+    // ✅ Thêm trang Bảo mật & Quyền riêng tư
+    case 'security':
+        include __DIR__ . '/pages/security.php';
+        break;
+
+    default:
+        echo "<h2>👋 Chào mừng đến hệ thống Quản trị Chợ Dữ Liệu</h2>";
+}
+?>
+</div>
+
+<script>
+function toggleMenu(id){
+    const sub = document.getElementById('submenu-'+id);
+    sub.style.display = (sub.style.display==='block'?'none':'block');
+}
+</script>
+</body>
+</html>

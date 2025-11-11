@@ -1,0 +1,59 @@
+version: '3.9'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: dm_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: data_marketplace
+      MYSQL_USER: dmuser
+      MYSQL_PASSWORD: dmpass
+    volumes:
+      - ./db/init_admin_service.sql:/docker-entrypoint-initdb.d/init_admin_service.sql
+    ports:
+      - "3310:3306"
+    networks:
+      - admin_network
+
+  admin-service:
+    build:
+      context: ./admin
+      dockerfile: Dockerfile
+    container_name: admin_service
+    restart: always
+    depends_on:
+      - db
+    volumes:
+      - ./admin/src:/var/www/html
+    ports:
+      - "8004:80"
+    environment:
+      DB_HOST: db
+      DB_USER: dmuser
+      DB_PASS: dmpass
+      DB_NAME: data_marketplace
+      ENCRYPT_KEY: change_this_32_chars_min
+    networks:
+      - admin_network
+    user: "33:33" # chạy bằng user www-data (id=33)
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:5.2.1
+    container_name: admin_phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: db
+      PMA_USER: dmuser
+      PMA_PASSWORD: dmpass
+    ports:
+      - "8081:80"
+    depends_on:
+      - db
+    networks:
+      - admin_network
+
+networks:
+  admin_network:
+    driver: bridge
