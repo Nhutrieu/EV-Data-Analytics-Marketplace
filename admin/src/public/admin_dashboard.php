@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['addUser'])) {
     $userCtrl->createUser([
         'name' => $_POST['name'],
         'email' => $_POST['email'],
-        'password' => password_hash($_POST['password'], PASSWORD_DEFAULT),
+        'password' => $_POST['password'],
         'role' => $_POST['role']
     ]);
     header("Location: ?page=users");
@@ -43,8 +43,15 @@ $page = $_GET['page'] ?? 'home';
 
 <div class="sidebar">
     <h3>⚙️ Chức năng chính</h3>
-    <div class="menu-item <?= $page==='users' ? 'active' : '' ?>" onclick="window.location='?page=users'">👥 Quản lý người dùng</div>
-    
+
+    <!-- 🧩 Quản lý người dùng -->
+    <div class="menu-item <?= in_array($page,['users','moderation']) ? 'active' : '' ?>" onclick="toggleMenu('user')">👥 Quản lý người dùng</div>
+    <div class="submenu" id="submenu-user" style="<?= in_array($page,['users','moderation']) ? 'display:block' : 'display:none' ?>">
+        <a href="?page=users" class="<?= $page==='users' ? 'active' : '' ?>">Danh sách người dùng</a>
+        <a href="?page=moderation" class="<?= $page==='moderation' ? 'active' : '' ?>">Kiểm duyệt dữ liệu</a>
+    </div>
+
+    <!-- 💰 Thanh toán & Doanh thu -->
     <div class="menu-item <?= in_array($page,['transactions','revenues']) ? 'active' : '' ?>" onclick="toggleMenu('payment')">💰 Thanh toán & Doanh thu</div>
     <div class="submenu" id="submenu-payment" style="<?= in_array($page,['transactions','revenues']) ? 'display:block' : 'display:none' ?>">
         <a href="?page=transactions" class="<?= $page==='transactions' ? 'active' : '' ?>">Giao dịch</a>
@@ -52,8 +59,6 @@ $page = $_GET['page'] ?? 'home';
     </div>
 
     <div class="menu-item <?= $page==='analytics' ? 'active' : '' ?>" onclick="window.location='?page=analytics'">📊 Phân tích & Báo cáo</div>
-
-    <!-- ✅ Thêm mục Bảo mật & Quyền riêng tư -->
     <div class="menu-item <?= $page==='security' ? 'active' : '' ?>" onclick="window.location='?page=security'">🔐 Bảo mật & Quyền riêng tư</div>
 </div>
 
@@ -129,11 +134,14 @@ switch ($page) {
         </form>";
         break;
 
+    case 'moderation':
+        include __DIR__ . '/pages/moderation.php';
+        break;
+
     case 'analytics':
         include __DIR__ . '/pages/analytics.php';
         break;
 
-    // ✅ Thêm trang Bảo mật & Quyền riêng tư
     case 'security':
         include __DIR__ . '/pages/security.php';
         break;

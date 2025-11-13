@@ -92,6 +92,7 @@ switch ($path) {
         exit;
 
     default:
-        echo json_encode(['message' => 'Admin API running']);
-        exit;
+        header("Location: /admin_dashboard.php");
+exit;
+
 }

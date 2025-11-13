@@ -1,5 +1,6 @@
 <?php
-require_once __DIR__ . '/../../src/helpers/SecurityHelper.php';
+// Đường dẫn đúng đến SecurityHelper.php
+require_once __DIR__ . '/../../helpers/SecurityHelper.php';
 ?>
 
 <div class="security-page">

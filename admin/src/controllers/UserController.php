@@ -31,9 +31,15 @@ class UserController {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function createUser($name, $email, $password, $role = 'consumer') {
+    // ✅ Cập nhật lại: nhận 1 mảng dữ liệu duy nhất
+    public function createUser($data) {
         $stmt = $this->pdo->prepare("INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)");
-        $stmt->execute([$name, $email, password_hash($password, PASSWORD_BCRYPT), $role]);
+        $stmt->execute([
+            $data['name'],
+            $data['email'],
+            password_hash($data['password'], PASSWORD_BCRYPT),
+            $data['role'] ?? 'consumer'
+        ]);
     }
 
     public function updateUser($id, $name, $email) {
@@ -60,7 +66,7 @@ function showProviders() {
         if (isset($_POST['action'])) {
             switch ($_POST['action']) {
                 case 'add':
-                    $ctrl->createUser($_POST['name'], $_POST['email'], $_POST['password'], 'provider');
+                    $ctrl->createUser($_POST);
                     break;
                 case 'edit':
                     $ctrl->updateUser($_POST['id'], $_POST['name'], $_POST['email']);
@@ -122,7 +128,7 @@ function showConsumers() {
         if (isset($_POST['action'])) {
             switch ($_POST['action']) {
                 case 'add':
-                    $ctrl->createUser($_POST['name'], $_POST['email'], $_POST['password'], 'consumer');
+                    $ctrl->createUser($_POST);
                     break;
                 case 'edit':
                     $ctrl->updateUser($_POST['id'], $_POST['name'], $_POST['email']);
@@ -164,7 +170,7 @@ function showConsumers() {
                         <input type='email' name='email' value='{$r['email']}' required>
                         <button type='submit' name='action' value='edit'>✏️</button>
                     </form>
-                    <form mezthod='POST' style='display:inline-block' onsubmit='return confirm(\"Xóa người dùng này?\")'>
+                    <form method='POST' style='display:inline-block' onsubmit='return confirm(\"Xóa người dùng này?\")'>
                         <input type='hidden' name='role' value='consumer'>
                         <input type='hidden' name='id' value='{$r['id']}'>
                         <button type='submit' name='action' value='delete'>🗑️</button>

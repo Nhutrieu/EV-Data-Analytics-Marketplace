@@ -66,10 +66,11 @@ function showTransactions() {
     echo "<h2>💰 Danh sách Giao dịch</h2>";
 
     $stmt = $pdo->query("
-        SELECT t.id, t.dataset_id, t.consumer_id, t.amount, t.provider_share, t.status, t.created_at
-        FROM transactions t
-        ORDER BY t.created_at DESC
-    ");
+    SELECT id, dataset_id, consumer_id, amount, provider_share, status, created_at
+    FROM transactions
+    ORDER BY created_at DESC
+");
+
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     if (!$rows) {
@@ -106,19 +107,32 @@ function showRevenueShare() {
     global $pdo;
     echo "<h2>💸 Chia sẻ doanh thu cho Providers</h2>";
 
+    // Đọc tỉ lệ chia từ config.php (mặc định 70%)
+    $cfgPath = __DIR__ . '/../config.php';
+    $cfg = file_exists($cfgPath) ? require $cfgPath : ['provider_share_pct' => 70];
+    $share_pct = $cfg['provider_share_pct'];
+
+    // ✅ Lấy dữ liệu từ bảng transactions + datasets + users, và tính toán chia sẻ trực tiếp
     $stmt = $pdo->query("
-        SELECT r.id, u.name AS provider, r.share_amount, r.created_at
-        FROM revenue_share r
-        JOIN users u ON u.id = r.provider_id
-        ORDER BY r.created_at DESC
+        SELECT 
+            t.id AS id,
+            u.name AS provider,
+            ROUND(t.amount * $share_pct / 100, 2) AS share_amount,
+            t.created_at
+        FROM transactions t
+        JOIN datasets d ON d.id = t.dataset_id
+        JOIN users u ON u.id = d.provider_id
+        ORDER BY t.created_at DESC
     ");
+
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     if (!$rows) {
-        echo "<p>Chưa có giao dịch chia sẻ doanh thu.</p>";
+        echo "<p>Chưa có giao dịch nào để chia doanh thu.</p>";
         return;
     }
 
+    // ✅ Hiển thị bảng kết quả
     echo "<table border='1' cellpadding='8' cellspacing='0'>";
     echo "<tr style='background:#28a745;color:white;'>
             <th>ID</th>
@@ -126,6 +140,7 @@ function showRevenueShare() {
             <th>Số tiền chia sẻ</th>
             <th>Ngày tạo</th>
           </tr>";
+
     foreach ($rows as $r) {
         echo "<tr>
                 <td>{$r['id']}</td>
