@@ -58,7 +58,16 @@ $page = $_GET['page'] ?? 'home';
         <a href="?page=revenues" class="<?= $page==='revenues' ? 'active' : '' ?>">Chia sẻ doanh thu</a>
     </div>
 
-    <div class="menu-item <?= $page==='analytics' ? 'active' : '' ?>" onclick="window.location='?page=analytics'">📊 Phân tích & Báo cáo</div>
+    <!-- 📊 Phân tích & Báo cáo -->
+<div class="menu-item <?= in_array($page,['analytics','analytics_ai']) ? 'active' : '' ?>" onclick="toggleMenu('analytics')">
+    📊 Phân tích dữ liệu
+</div>
+
+<div class="submenu" id="submenu-analytics" style="<?= in_array($page,['analytics','analytics_ai']) ? 'display:block':'display:none' ?>">
+    <a href="?page=analytics" class="<?= $page==='analytics' ? 'active' : '' ?>">Báo cáo tổng hợp</a>
+    <a href="?page=analytics_ai" class="<?= $page==='analytics_ai' ? 'active' : '' ?>">AI phân tích & dự báo</a>
+</div>
+
     <div class="menu-item <?= $page==='security' ? 'active' : '' ?>" onclick="window.location='?page=security'">🔐 Bảo mật & Quyền riêng tư</div>
 </div>
 
@@ -141,6 +150,10 @@ switch ($page) {
     case 'analytics':
         include __DIR__ . '/pages/analytics.php';
         break;
+    case 'analytics_ai':
+    include __DIR__ . '/pages/analytics_ai.php';
+    break;
+
 
     case 'security':
         include __DIR__ . '/pages/security.php';

@@ -1,7 +1,22 @@
 <?php
 require_once __DIR__ . '/../../controllers/AnalyticsController.php';
 $ctrl = new AnalyticsController($pdo);
-$stats = $ctrl->overview();
+
+// Lấy tổng quan + dữ liệu trends
+$overview = $ctrl->overview();
+$trends   = $ctrl->data_trends();
+
+// Gom vào 1 mảng chung để tiện dùng
+$stats = [
+    "total_users"      => $overview['total_users'],
+    "total_providers"  => $overview['total_providers'],
+    "total_consumers"  => $overview['total_consumers'],
+    "total_datasets"   => $overview['total_datasets'],
+    "total_revenue"    => $overview['total_revenue'],
+
+    "revenue_by_day"   => $trends['revenue_over_time'],
+    "top_by_purchases" => $trends['top_datasets'],
+];
 
 // Nếu người dùng chỉnh sửa doanh thu
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['day'], $_POST['amount'])) {
@@ -37,34 +52,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['day'], $_POST['amount
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 const ctx = document.getElementById('revenueChart').getContext('2d');
-const data = {
-    labels: <?= json_encode(array_column($stats['revenue_by_day'], 'day')) ?>,
-    datasets: [{
-        label: 'Doanh thu (VNĐ)',
-        data: <?= json_encode(array_column($stats['revenue_by_day'], 'total')) ?>,
-        borderColor: '#58a6ff',
-        backgroundColor: 'rgba(88,166,255,0.3)',
-        borderWidth: 2,
-        tension: 0.3,
-        fill: true,
-        pointRadius: 4,
-    }]
-};
-new Chart(ctx, { type: 'line', data });
-</script>
 
-<h3 style="margin-top:40px;">📝 Chỉnh sửa doanh thu</h3>
-<form method="POST" style="background:#161b22;padding:15px;border-radius:10px;width:400px;">
-    <label>Ngày:</label><br>
-    <select name="day" style="width:100%;padding:5px;margin:5px 0;">
-        <?php foreach ($stats['revenue_by_day'] as $r): ?>
-            <option value="<?= $r['day'] ?>"><?= $r['day'] ?></option>
-        <?php endforeach; ?>
-    </select>
-    <label>Doanh thu mới (VNĐ):</label>
-    <input type="number" step="0.01" name="amount" required style="width:100%;padding:5px;margin:5px 0;">
-    <button type="submit" style="padding:8px 15px;background:#238636;color:white;border:none;border-radius:5px;cursor:pointer;">💾 Lưu thay đổi</button>
-</form>
+const labels = <?= json_encode(array_column($stats['revenue_by_day'], 'day')) ?>;
+const dataValues = <?= json_encode(array_column($stats['revenue_by_day'], 'revenue')) ?>;
+
+new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: labels,
+        datasets: [{
+            label: 'Doanh thu (VNĐ)',
+            data: dataValues,
+            borderColor: '#58a6ff',
+            backgroundColor: 'rgba(88,166,255,0.3)',
+            borderWidth: 2,
+            tension: 0.3,
+            fill: true,
+            pointRadius: 4,
+        }]
+    }
+});
+</script>
 
 <h3 style="margin-top:40px;">🔥 Top 10 Dataset được mua nhiều nhất</h3>
 <table border="1" cellpadding="8" cellspacing="0" style="border-collapse:collapse;width:100%;background:#161b22;color:white;">

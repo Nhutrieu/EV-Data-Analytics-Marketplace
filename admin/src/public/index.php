@@ -86,9 +86,10 @@ switch ($path) {
         echo json_encode($anCtrl->overview());
         exit;
 
-    case 'stats/ev-trends':
-        $auth = require_bearer($pdo); admin_only($auth);
-        echo json_encode($anCtrl->ev_trends());
+   case 'stats/data-trends':
+        $auth = require_bearer($pdo); 
+        admin_only($auth);
+        echo json_encode($anCtrl->data_trends());
         exit;
 
     default:
