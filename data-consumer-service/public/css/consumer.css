@@ -1,0 +1,1846 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary: #0066cc;
+    --secondary: #00cc99;
+    --dark: #0a0e27;
+    --darker: #050812;
+    --light: #f0f4f8;
+    --text: #bbc2cb;
+    --border: #1a2332;
+    --success: #00cc99;
+    --warning: #ffaa00;
+    --danger: #ff3333;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
+    color: var(--text);
+    min-height: 100vh;
+}
+
+/* Navbar */
+.navbar {
+    background: rgba(10, 14, 39, 0.95);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+}
+
+.nav-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary);
+}
+
+.logo-icon {
+    font-size: 1.8rem;
+}
+
+.nav-menu {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+    flex: 1;
+    justify-content: center;
+}
+
+.nav-btn {
+    background: none;
+    border: none;
+    color: var(--text);
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.nav-btn:hover {
+    color: var(--primary);
+    background: rgba(0, 102, 204, 0.1);
+}
+
+.nav-btn.active {
+    color: var(--primary);
+    background: rgba(0, 102, 204, 0.2);
+}
+
+.nav-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1rem;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--primary);
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.cart-btn {
+    background: rgba(0, 102, 204, 0.2);
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.cart-btn:hover {
+    background: rgba(0, 102, 204, 0.3);
+}
+
+.cart-icon {
+    font-size: 1.2rem;
+}
+
+.cart-count {
+    background: var(--danger);
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+/* Container */
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Pages */
+.page {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    color: var(--light);
+}
+
+h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    color: var(--light);
+}
+
+h3 {
+    font-size: 1.2rem;
+    color: var(--light);
+}
+
+/* Search Section */
+.search-section {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.search-bar {
+    flex: 1;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.search-bar:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: rgba(0, 102, 204, 0.1);
+}
+
+.search-bar::placeholder {
+    color: rgba(224, 230, 237, 0.5);
+}
+
+.filter-btn {
+    padding: 1rem 1.5rem;
+    background: rgba(0, 102, 204, 0.2);
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.filter-btn:hover {
+    background: rgba(0, 102, 204, 0.3);
+}
+
+/* Filter Panel */
+.filter-panel {
+    background: rgba(26, 35, 50, 0.8);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.filter-group label {
+    font-weight: 600;
+    color: var(--light);
+}
+
+.filter-group select,
+.filter-group input {
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    font-size: 0.9rem;
+}
+
+.filter-group select:focus,
+.filter-group input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.apply-filter-btn {
+    grid-column: 1 / -1;
+    padding: 0.75rem;
+    background: var(--primary);
+    border: none;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.apply-filter-btn:hover {
+    background: #0052a3;
+}
+
+/* Sort Section */
+.sort-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.sort-section select {
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    cursor: pointer;
+}
+
+/* Packages Grid */
+.packages-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+}
+
+.package-card {
+    background: rgba(26, 35, 50, 0.6);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+}
+
+.package-card:hover {
+    border-color: var(--primary);
+    background: rgba(26, 35, 50, 0.9);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 102, 204, 0.2);
+}
+
+.package-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.package-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--light);
+}
+
+.package-description {
+    font-size: 0.9rem;
+    color: rgba(224, 230, 237, 0.7);
+    margin-bottom: 1rem;
+    flex: 1;
+}
+
+.package-meta {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+    color: rgba(224, 230, 237, 0.6);
+}
+
+.package-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.package-price {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--secondary);
+    margin-bottom: 1rem;
+}
+
+.package-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn {
+    flex: 1;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #0052a3;
+}
+
+.btn-secondary {
+    background: rgba(0, 102, 204, 0.2);
+    color: var(--primary);
+    border: 1px solid var(--primary);
+}
+
+.btn-secondary:hover {
+    background: rgba(0, 102, 204, 0.3);
+}
+
+/* Data Page */
+.data-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.stat-card {
+    background: rgba(26, 35, 50, 0.6);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    color: rgba(224, 230, 237, 0.7);
+    font-size: 0.95rem;
+}
+
+.data-categories {
+    margin-top: 3rem;
+}
+
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.category-card {
+    background: rgba(26, 35, 50, 0.6);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.category-card:hover {
+    border-color: var(--primary);
+    background: rgba(26, 35, 50, 0.9);
+}
+
+.category-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.category-card h3 {
+    margin-bottom: 0.5rem;
+}
+
+.category-card p {
+    color: rgba(224, 230, 237, 0.7);
+    font-size: 0.9rem;
+}
+
+/* Analytics Page */
+.analytics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+}
+
+.chart-card {
+    background: rgba(26, 35, 50, 0.6);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    position: relative;
+}
+
+.chart-card.locked {
+    border-color: var(--primary);
+    background: rgba(0, 102, 204, 0.05);
+}
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.chart-header h3 {
+    margin: 0;
+}
+
+.lock-icon {
+    font-size: 1.2rem;
+    color: var(--primary);
+}
+
+canvas {
+    max-height: 300px;
+}
+
+/* Account Page */
+.account-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.profile-section {
+    background: rgba(26, 35, 50, 0.6);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.profile-avatar {
+    font-size: 4rem;
+    background: rgba(0, 102, 204, 0.2);
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-info h2 {
+    margin: 0 0 0.5rem 0;
+}
+
+.profile-info p {
+    color: rgba(224, 230, 237, 0.7);
+    margin: 0.25rem 0;
+}
+
+.profile-tier {
+    color: var(--secondary);
+    font-weight: 600;
+}
+
+.account-sections {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.account-card {
+    background: rgba(26, 35, 50, 0.6);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+}
+
+.purchase-list,
+.usage-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.purchase-item,
+.usage-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    border: 1px solid var(--border);
+}
+
+.purchase-date,
+.usage-item span:last-child {
+    color: rgba(224, 230, 237, 0.6);
+    font-size: 0.9rem;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: var(--dark);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.modal-header h2 {
+    margin: 0;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: var(--text);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close-btn:hover {
+    color: var(--primary);
+}
+
+.detail-content {
+    padding: 1.5rem;
+}
+
+.pricing-options {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 1.5rem 0;
+}
+
+.pricing-option {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.pricing-option:hover {
+    border-color: var(--primary);
+    background: rgba(0, 102, 204, 0.1);
+}
+
+.pricing-option.selected {
+    border-color: var(--primary);
+    background: rgba(0, 102, 204, 0.2);
+}
+
+.pricing-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.pricing-name {
+    font-weight: 600;
+    color: var(--light);
+}
+
+.pricing-price {
+    color: var(--secondary);
+    font-weight: bold;
+}
+
+.pricing-description {
+    color: rgba(224, 230, 237, 0.6);
+    font-size: 0.9rem;
+}
+
+.cart-items {
+    padding: 1.5rem;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    border: 1px solid var(--border);
+}
+
+.cart-item-info h4 {
+    margin: 0 0 0.25rem 0;
+    color: var(--light);
+}
+
+.cart-item-info p {
+    margin: 0;
+    color: rgba(224, 230, 237, 0.6);
+    font-size: 0.9rem;
+}
+
+.cart-item-price {
+    color: var(--secondary);
+    font-weight: bold;
+}
+
+.remove-btn {
+    background: rgba(255, 51, 51, 0.2);
+    border: 1px solid var(--danger);
+    color: var(--danger);
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.remove-btn:hover {
+    background: rgba(255, 51, 51, 0.3);
+}
+
+.empty-cart {
+    text-align: center;
+    color: rgba(224, 230, 237, 0.6);
+    padding: 2rem;
+}
+
+.cart-footer {
+    padding: 1.5rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cart-total {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.cart-total span:first-child {
+    color: rgba(224, 230, 237, 0.6);
+}
+
+.cart-total span:last-child {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--secondary);
+}
+
+.checkout-btn {
+    padding: 0.75rem 2rem;
+    background: var(--primary);
+    border: none;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.checkout-btn:hover {
+    background: #0052a3;
+}
+
+/* Toast */
+.toast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: var(--primary);
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 6px;
+    display: none;
+    z-index: 3000;
+    animation: slideInRight 0.3s ease;
+}
+
+.toast.show {
+    display: block;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .nav-menu {
+        gap: 1rem;
+    }
+
+    .nav-btn {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.9rem;
+    }
+
+    .container {
+        padding: 1rem;
+    }
+
+    h1 {
+        font-size: 1.8rem;
+    }
+
+    .packages-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .analytics-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .search-section {
+        flex-direction: column;
+    }
+
+    .filter-panel {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .modal-content {
+        width: 95%;
+    }
+}
+.logout-btn {
+    padding: 0.75rem 1.5rem;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.3s;
+}
+
+.logout-btn:hover {
+    background: #cc0000;
+}
+/* consumer.css (Thêm vào cuối file) */
+
+/* AI Recommendation Card */
+.ai-recommendation {
+    /* Base style, use margin-bottom to separate from search */
+    margin-bottom: 2rem; 
+}
+
+.ai-card {
+    background: rgba(0, 204, 153, 0.1); /* Light green/teal background */
+    border: 1px solid var(--secondary);
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+}
+
+.ai-icon {
+    font-size: 2.5rem;
+    color: var(--secondary);
+    background: rgba(0, 204, 153, 0.2);
+    padding: 0.5rem;
+    border-radius: 8px;
+}
+
+.ai-content h4 {
+    margin: 0 0 0.5rem 0;
+    color: var(--secondary);
+    font-size: 1.2rem;
+}
+
+.ai-content p {
+    color: var(--text);
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+}
+
+.btn-small {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+}
+
+/* Cải tiến giao diện thẻ khóa/mở khóa */
+.chart-card.locked {
+    position: relative;
+    /* Làm mờ biểu đồ khi bị khóa (chỉ mô phỏng style) */
+    opacity: 0.5; 
+    filter: blur(2px);
+    pointer-events: none; /* Ngăn chặn tương tác */
+    
+    /* Overlay mô tả bị khóa */
+}
+
+.chart-card.locked::after {
+    content: 'Mở khóa để xem chi tiết';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(10, 14, 39, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    font-size: 1.5rem;
+    font-weight: bold;
+    border-radius: 12px;
+    filter: none;
+    opacity: 1;
+    pointer-events: all;
+}
+
+.chart-card:not(.locked) {
+    opacity: 1;
+    filter: none;
+    pointer-events: all;
+}
+/* === Detail Modal Styling === */
+.detail-header {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.detail-icon {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+}
+
+.detail-desc {
+    color: #ccc;
+    font-size: 0.95rem;
+}
+
+.detail-info {
+    background: rgba(255,255,255,0.05);
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+}
+
+.detail-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.detail-actions .btn {
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+}
+
+.detail-price {
+    color: #00cc99;
+    font-size: 1.2rem;
+}
+
+.preview-title {
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+.preview-box {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 1rem;
+    border-radius: 10px;
+    overflow-x: auto;
+}
+
+/* === Sample Table === */
+.sample-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: #eee;
+}
+
+.sample-table th, .sample-table td {
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 0.5rem;
+    text-align: center;
+}
+
+.sample-table th {
+    background: rgba(255,255,255,0.1);
+    color: #00ccff;
+} 
+.qr-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex; justify-content: center; align-items: center;
+    z-index: 9999;
+}
+.qr-box {
+    background: #fff; padding: 2rem; border-radius: 12px;
+    text-align: center; max-width: 320px; width: 90%;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+.qr-box img { width: 250px; height: auto; margin: 1rem 0; }
+.qr-box button { margin-top:1rem; padding:0.5rem 1rem; border:none; background:#555; color:#fff; border-radius:6px; cursor:pointer; }
+.qr-box button:hover { background:#333; }
+/* Nút chat tròn nổi */
+#ai-chat-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 28px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+    z-index: 10000; /* đảm bảo nổi trên tất cả */
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+#ai-chat-btn:hover { 
+    transform: scale(1.15);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.45);
+}
+
+/* Popup chat */
+#ai-chat-popup {
+    display: none; /* ẩn mặc định */
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    width: 350px; /* rộng hơn */
+    max-height: 500px;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 12px 35px rgba(0,0,0,0.4);
+    overflow: hidden;
+    flex-direction: column;
+    font-family: 'Arial', sans-serif;
+    animation: fadeIn 0.3s ease-out;
+    z-index: 10001;
+    pointer-events: auto; /* đảm bảo input nhận click */
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Khi show popup */
+#ai-chat-popup.show {
+    display: flex;
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* Header */
+.ai-header {
+    background-color: #007bff;
+    color: #fff;
+    padding: 12px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+/* Messages container */
+#ai-messages {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    background: #1a1a1a;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    scroll-behavior: smooth;
+}
+
+/* Bubble chat style */
+#ai-messages .msg {
+    padding: 8px 14px;
+    border-radius: 20px;
+    max-width: 80%;
+    word-break: break-word;
+    line-height: 1.4;
+}
+
+#ai-messages .msg.user {
+    background-color: #007bff;
+    color: #fff;
+    align-self: flex-end;
+    border-bottom-right-radius: 6px;
+}
+
+#ai-messages .msg.ai {
+    background-color: #e5e5ea;
+    color: #333;
+    align-self: flex-start;
+    border-bottom-left-radius: 6px;
+}
+
+#ai-messages .msg.alert {
+    background-color: #ffe0e0;
+    color: #b00000;
+    align-self: center;
+    font-weight: bold;
+}
+
+/* Input area */
+.ai-input {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #ddd;
+    background: #fff;
+    gap: 6px;
+}
+
+.ai-input input {
+    flex: 1;
+    padding: 10px 14px;
+    border-radius: 25px;
+    border: 1px solid #ccc;
+    outline: none;
+    font-size: 14px;
+    transition: border-color 0.2s;
+}
+.ai-input input:focus {
+    border-color: #007bff;
+}
+
+/* Send button */
+.ai-input button {
+    padding: 10px 16px;
+    border: none;
+    background-color: #007bff;
+    color: #fff;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s, transform 0.2s;
+}
+.ai-input button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+/* Animation fadeIn */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive cho mobile */
+@media (max-width: 400px) {
+    #ai-chat-popup {
+        width: 90%;
+        right: 5%;
+        bottom: 80px;
+    }
+    #ai-chat-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 24px;
+    }
+}
+/* Danh sách key */
+.api-key-list {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Box 1 API key */
+.api-key-row {
+    background: #0f172a;
+    border: 1px solid rgba(148, 163, 184, 0.5);
+    border-radius: 12px;
+    padding: 10px 12px;
+    transition: 0.15s ease;
+    font-size: 0.9rem;
+    color: #e5e7eb;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.6);
+}
+
+.api-key-row:hover {
+    border-color: #60a5fa;
+    box-shadow: 0 12px 28px rgba(37, 99, 235, 0.4);
+    background: radial-gradient(circle at top left,
+        rgba(37, 99, 235, 0.15),
+        #020617 70%);
+}
+
+/* Dòng đầu: Key + mắt */
+.api-key-row-main {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+/* Bên trái: "Key:" + value */
+.api-key-left {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    flex: 1;
+    min-width: 0;
+}
+
+.api-key-left strong {
+    color: #9ca3af;
+    font-weight: 600;
+}
+
+/* Giá trị API key */
+.api-key-value {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+        "Liberation Mono", "Courier New", monospace;
+    font-weight: 600;
+    color: #f9fafb;
+    word-break: break-all; /* key dài tự xuống dòng, không bị mất đuôi */
+}
+
+/* Các dòng info bên dưới (Trạng thái, Ngày tạo) */
+.api-key-row > div {
+    margin-top: 2px;
+    color: #9ca3af;
+}
+
+.api-key-row > div strong {
+    color: #e5e7eb;
+    font-weight: 500;
+}
+
+/* Nút mắt ẩn/hiện */
+.toggle-api-visibility {
+    border: none;
+    background: #020617;
+    color: #9ca3af;
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 0 1px rgba(148, 163, 184, 0.5);
+    transition: background 0.15s ease, color 0.15s ease,
+        transform 0.1s ease, box-shadow 0.15s ease;
+}
+
+.toggle-api-visibility:hover {
+    background: #1d4ed8;
+    color: #e5e7eb;
+    box-shadow: 0 0 0 1px rgba(129, 140, 248, 0.9);
+    transform: translateY(-0.5px);
+}
+
+.toggle-api-visibility:active {
+    transform: translateY(0.5px) scale(0.97);
+}
+
+/* Icon Material Symbols (mắt) */
+.material-symbols-outlined {
+    font-family: "Material Symbols Outlined";
+    font-weight: normal;
+    font-style: normal;
+    font-size: 18px;
+    line-height: 1;
+    letter-spacing: normal;
+    white-space: nowrap;
+    -webkit-font-feature-settings: "liga";
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Nút Xóa API key – chỉ dùng cho phần key */
+.delete-api-btn {
+    background: linear-gradient(135deg, #ef4444, #b91c1c);
+    color: #fee2e2;
+    border: none;
+    padding: 5px 12px;
+    border-radius: 999px;
+    cursor: pointer;
+    margin-top: 8px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow:
+        0 10px 24px rgba(248, 113, 113, 0.35),
+        0 0 0 1px rgba(248, 113, 113, 0.25);
+    transition: transform 0.15s ease, box-shadow 0.15s ease,
+        filter 0.15s ease;
+}
+
+.delete-api-btn::before {
+    content: "🗑";
+}
+
+.delete-api-btn:hover {
+    filter: brightness(1.05);
+    transform: translateY(-1px);
+    box-shadow:
+        0 14px 30px rgba(248, 113, 113, 0.45),
+        0 0 0 1px rgba(239, 68, 68, 0.35);
+}
+
+.delete-api-btn:active {
+    transform: translateY(0);
+    box-shadow:
+        0 8px 18px rgba(248, 113, 113, 0.3),
+        0 0 0 1px rgba(185, 28, 28, 0.4);
+}
+
+/* Chỉ style nút "Tạo API Key mới" – không ảnh hưởng nút .btn khác */
+#createApiKeyBtn {
+    background: #2563eb;
+    color: #f9fafb;
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+    transition: background 0.15s ease, transform 0.1s ease,
+        box-shadow 0.15s ease;
+}
+
+#createApiKeyBtn:hover {
+    background: #1d4ed8;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.45);
+}
+
+#createApiKeyBtn:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 10px rgba(37, 99, 235, 0.35);
+}
+.purchase-list {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.purchase-empty {
+    color: #9ca3af;
+    font-size: 0.9rem;
+}
+
+/* 1 item lịch sử mua */
+.purchase-item {
+    background: #0f172a;
+    border-radius: 10px;
+    border: 1px solid rgba(148, 163, 184, 0.5);
+    padding: 10px 12px;
+    font-size: 0.85rem;
+    color: #e5e7eb;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.7);
+}
+
+/* Header: tên dataset + loại gói */
+.purchase-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.purchase-title {
+    font-weight: 600;
+}
+
+/* Badge loại gói (Mua / Thuê tháng / Thuê năm) */
+.purchase-type {
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: rgba(59, 130, 246, 0.18);
+    color: #bfdbfe;
+}
+
+/* Dòng thông tin phụ */
+.purchase-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    font-size: 0.78rem;
+    color: #9ca3af;
+}
+
+.purchase-meta strong {
+    color: #e5e7eb;
+    font-weight: 500;
+}
+/* =========================
+   Account Page - Dark mode
+   ========================== */
+
+#account-page {
+    background: #020617;
+    color: #e5e7eb;
+}
+
+/* Layout */
+#account-page .simple-account {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.4fr);
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+/* Card */
+#account-page .profile-section,
+#account-page .account-card {
+    background: #020617;
+    border-radius: 16px;
+    padding: 1.25rem 1.5rem;
+    border: 1px solid #1f2937;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.6);
+}
+
+/* Profile header */
+#account-page .profile-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+#account-page .profile-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 999px;
+    background: #0f172a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+}
+
+#account-page .profile-info h2 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+#account-page .profile-email {
+    margin: 0.25rem 0 0;
+    font-size: 0.9rem;
+    color: #9ca3af;
+    font-weight: 500;
+}
+
+/* Buttons */
+#account-page .account-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 1.25rem;
+}
+
+#account-page .btn-account {
+    width: 100%;
+    padding: 0.55rem 0.9rem;
+    border-radius: 10px;
+    border: 1px solid #1f2937;
+    background: #020617;
+    cursor: pointer;
+    font-size: 0.9rem;
+    text-align: left;
+    color: #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    transition:
+        background 0.15s ease,
+        border-color 0.15s ease,
+        box-shadow 0.15s ease,
+        transform 0.05s ease;
+}
+
+#account-page .btn-account::after {
+    content: "›";
+    font-size: 0.9rem;
+    color: #6b7280;
+}
+
+#account-page .btn-account:hover {
+    background: #0b1220;
+    border-color: #2563eb;
+    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.4);
+    transform: translateY(-1px);
+}
+
+/* Primary (nút xanh) */
+#account-page .btn-account.primary {
+    background: #2563eb;
+    border-color: #2563eb;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+#account-page .btn-account.primary::after {
+    color: #bfdbfe;
+}
+
+#account-page .btn-account.primary:hover {
+    background: #1d4ed8;
+    border-color: #1d4ed8;
+}
+
+/* Đăng xuất */
+#account-page .btn-account.outline {
+    background: #020617;
+    border-color: #334155;
+}
+
+/* Xoá tài khoản */
+#account-page .btn-account.danger {
+    background: #450a0a;
+    border-color: #b91c1c;
+    color: #fecaca;
+}
+
+#account-page .btn-account.danger::after {
+    color: #fecaca;
+}
+
+#account-page .btn-account.danger:hover {
+    background: #7f1d1d;
+}
+
+/* Cột phải */
+#account-page .account-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+#account-page .account-card h3 {
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+#account-page .btn-account.small {
+    width: auto;
+    display: inline-flex;
+    justify-content: center;
+    padding: 0.35rem 0.9rem;
+}
+
+/* Scroll list */
+#account-page .purchase-list,
+#account-page .api-key-list {
+    max-height: 360px;
+    overflow-y: auto;
+}
+
+#account-page .purchase-list::-webkit-scrollbar,
+#account-page .api-key-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+#account-page .purchase-list::-webkit-scrollbar-thumb,
+#account-page .api-key-list::-webkit-scrollbar-thumb {
+    background: #334155;
+    border-radius: 999px;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    #account-page .simple-account {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+/* =========================
+   Account Modals
+   ========================== */
+
+.account-modal {
+    position: fixed;
+    inset: 0;
+    display: none; /* ẩn mặc định */
+    align-items: center;
+    justify-content: center;
+    z-index: 1500;
+    font-family: inherit;
+}
+
+.account-modal.show {
+    display: flex;
+}
+
+.account-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.7);
+}
+
+.account-modal-dialog {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    background: #020617;
+    border-radius: 18px;
+    border: 1px solid #1f2937;
+    box-shadow: 0 20px 60px rgba(15, 23, 42, 0.8);
+    padding: 1.25rem 1.5rem 1.5rem;
+    z-index: 1;
+    color: #e5e7eb;
+}
+
+/* Header modal */
+.account-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.account-modal-header h2 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.account-modal-close {
+    border: none;
+    background: transparent;
+    color: #9ca3af;
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 0.15rem;
+    border-radius: 999px;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.account-modal-close:hover {
+    background: #111827;
+    color: #e5e7eb;
+}
+
+/* Body modal */
+.account-modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+/* Form controls */
+.account-modal-body .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.account-modal-body label {
+    font-size: 0.85rem;
+    color: #cbd5f5;
+}
+
+.account-modal-body input[type="text"],
+.account-modal-body input[type="email"],
+.account-modal-body input[type="password"] {
+    background: #020617;
+    border-radius: 10px;
+    border: 1px solid #1f2937;
+    padding: 0.55rem 0.75rem;
+    font-size: 0.9rem;
+    color: #e5e7eb;
+    outline: none;
+    transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease,
+        background 0.15s ease;
+}
+
+.account-modal-body input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.6);
+    background: #02091f;
+}
+
+/* Warning text */
+.account-modal-body .warning-text {
+    font-size: 0.85rem;
+    color: #fca5a5;
+    background: rgba(127, 29, 29, 0.2);
+    border-radius: 10px;
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    padding: 0.6rem 0.75rem;
+}
+
+/* Footer modal */
+.account-modal-footer {
+    margin-top: 0.75rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+/* Nút trong modal */
+.account-modal .btn-account {
+    justify-content: center;
+    text-align: center;
+    min-width: 120px;
+}
+
+.account-modal .btn-account.outline {
+    background: #020617;
+    border-color: #334155;
+}
+
+.account-modal .btn-account.danger {
+    background: #450a0a;
+    border-color: #b91c1c;
+    color: #fecaca;
+}
+
+/* Responsive modal */
+@media (max-width: 480px) {
+    .account-modal-dialog {
+        margin: 0 1rem;
+        max-width: 100%;
+    }
+}
+/* =========================
+   Fix nút trong account modal
+   ========================== */
+
+/* Base cho nút trong footer modal */
+.account-modal-footer .btn-account {
+    min-width: 120px;
+    padding: 0.5rem 1.1rem;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #1f2937;
+    background: #020617;
+    color: #e5e7eb;
+    cursor: pointer;
+    transition:
+        background 0.15s ease,
+        border-color 0.15s ease,
+        box-shadow 0.15s ease,
+        transform 0.05s ease;
+}
+
+/* Huỷ */
+.account-modal-footer .btn-account.outline {
+    background: #020617;
+    border-color: #334155;
+    color: #e5e7eb;
+}
+
+.account-modal-footer .btn-account.outline:hover {
+    background: #0b1120;
+    border-color: #475569;
+}
+
+/* Lưu thay đổi / Đổi mật khẩu (primary) */
+.account-modal-footer .btn-account.primary {
+    background: #2563eb;
+    border-color: #2563eb;
+    color: #ffffff;
+}
+
+.account-modal-footer .btn-account.primary:hover {
+    background: #1d4ed8;
+    border-color: #1d4ed8;
+    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.4);
+    transform: translateY(-1px);
+}
+
+/* Nút danger trong modal xoá tài khoản */
+.account-modal-footer .btn-account.danger {
+    background: #b91c1c;
+    border-color: #b91c1c;
+    color: #fee2e2;
+}
+
+.account-modal-footer .btn-account.danger:hover {
+    background: #991b1b;
+    border-color: #ef4444;
+    box-shadow: 0 6px 18px rgba(248, 113, 113, 0.4);
+    transform: translateY(-1px);
+}

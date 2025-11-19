@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EV Data Analytics Marketplace</title>
+    <link rel="stylesheet" href="css/consumer.css">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <span class="logo-icon">⚡</span>
+                <span>EV</span>
+            </div>
+            <ul class="nav-menu">
+                <li><button class="nav-btn active" data-page="dashboard">Danh sách dữ liệu</button></li>
+                <li><button class="nav-btn" data-page="analytics">Phân tích</button></li>
+                <li><button class="nav-btn" data-page="account">Tài khoản</button></li>
+            </ul>
+            <div class="nav-right">
+                <button class="cart-btn" id="cartBtn">
+                    <span class="cart-icon">🛒</span>
+                    <span class="cart-count" id="cartCount">0</span>
+                </button>
+                <button class="logout-btn" id="logoutBtn">Đăng xuất</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard Page -->
+    <div class="page" id="dashboard-page">
+        <div class="container">
+            <h1>Dataset</h1>
+            <div class="search-section">
+                <input type="text" id="searchInput" class="search-bar" placeholder="Tìm kiếm gói dữ liệu...">
+                <button class="filter-btn" id="filterBtn">🔽 Bộ lọc</button>
+            </div>
+
+            <!-- Filter Panel -->
+            <div class="filter-panel" id="filterPanel" style="display: none;">
+                <div class="filter-group">
+                    <label>Danh mục:</label>
+                    <select id="categoryFilter">
+                        <option value="">Tất cả</option>
+                        <option value="charging">Trạm sạc</option>
+                        <option value="battery">Pin</option>
+                        <option value="performance">Hiệu suất</option>
+                        <option value="market">Thị trường</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Loại xe:</label>
+                    <select id="vehicleTypeFilter">
+                        <option value="">Tất cả</option>
+                        <option value="EV">EV</option>
+                        <option value="Hybrid">Hybrid</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Khoảng giá:</label>
+                    <input type="range" id="priceFilter" min="0" max="100000000" value="100000000">
+                    <span id="priceValue">100,000,000</span>
+                </div>
+                <div class="filter-group">
+                    <label>Định dạng:</label>
+                    <select id="formatFilter">
+                        <option value="">Tất cả</option>
+                        <option value="csv">CSV</option>
+                        <option value="json">JSON</option>
+                    </select>
+                </div>
+                <button class="apply-filter-btn" id="applyFilterBtn">Áp dụng</button>
+            </div>
+
+            <!-- Sort Options -->
+            <div class="sort-section">
+                <label>Sắp xếp:</label>
+                <select id="sortSelect">
+                    <option value="popular">Phổ biến</option>
+                    <option value="newest">Mới nhất</option>
+                    <option value="price-low">Giá thấp</option>
+                    <option value="price-high">Giá cao</option>
+                    <option value="rating">Đánh giá</option>
+                </select>
+            </div>
+
+            <!-- Data Packages Grid -->
+            <div class="packages-grid" id="packagesGrid">
+                <!-- Packages will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Analytics Page -->
+    <div class="page" id="analytics-page" style="display: none;">
+        <div class="container">
+            <h1>Công cụ Phân tích</h1>
+            <div class="analytics-grid">
+                <div class="chart-card locked">
+                    <div class="chart-header">
+                        <h3>Trạng thái Pin (SoC)</h3>
+                        <span class="lock-icon">🔒</span>
+                    </div>
+                    <canvas id="socChart"></canvas>
+                </div>
+
+                <div class="chart-card locked">
+                    <div class="chart-header">
+                        <h3>Tần suất Sạc</h3>
+                        <span class="lock-icon">🔒</span>
+                    </div>
+                    <canvas id="chargingFreqChart"></canvas>
+                </div>
+
+                <div class="chart-card locked">
+                    <div class="chart-header">
+                        <h3>Quãng đường Hàng ngày</h3>
+                        <span class="lock-icon">🔒</span>
+                    </div>
+                    <canvas id="rangeChart"></canvas>
+                </div>
+
+                <div class="chart-card locked">
+                    <div class="chart-header">
+                        <h3>Tiêu thụ Năng lượng</h3>
+                        <span class="lock-icon">🔒</span>
+                    </div>
+                    <canvas id="consumptionChart"></canvas>
+                </div>
+
+                <div class="chart-card locked">
+                    <div class="chart-header">
+                        <h3>Phân bố Loại xe</h3>
+                        <span class="lock-icon">🔒</span>
+                    </div>
+                    <canvas id="vehicleTypeChart"></canvas>
+                </div>
+
+                <div class="chart-card locked">
+                    <div class="chart-header">
+                        <h3>CO₂ Tiết kiệm</h3>
+                        <span class="lock-icon">🔒</span>
+                    </div>
+                    <canvas id="co2Chart"></canvas>
+                </div>
+            </div>
+            <!-- AI Chat Button -->
+            <div id="ai-chat-btn">💬</div>
+
+            <!-- AI Chat Popup -->
+            <div id="ai-chat-popup">
+                <div class="ai-header">
+                    <span>AI Assistant</span>
+                    <button id="ai-close-btn">✖</button>
+                </div>
+                <div id="ai-messages"></div>
+                <div class="ai-input">
+                    <input id="aiUserInput" type="text" placeholder="Nhập câu hỏi...">
+                    <button id="aiSendBtn">Gửi</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Account Page -->
+    <div class="page" id="account-page" style="display: none;">
+        <div class="container">
+            <h1>Tài khoản của tôi</h1>
+            <div class="account-content simple-account">
+                <div class="profile-section">
+                    <div class="profile-header">
+                        <div class="profile-avatar">👤</div>
+                        <div class="profile-info">
+                            <h2 class="profile-name"></h2>
+                            <p class="profile-email"></p>
+                            <p class="profile-tier"></p>
+                        </div>
+
+                    </div>
+
+                    <div class="account-actions">
+                        <button id="editProfileBtn" class="btn-account primary">
+                            Chỉnh sửa hồ sơ
+                        </button>
+                        <button id="changePasswordBtn" class="btn-account">
+                            Đổi mật khẩu
+                        </button>
+                        <button id="logoutAccountBtn" class="btn-account outline">
+                            Đăng xuất
+                        </button>
+                        <button id="deleteAccountBtn" class="btn-account danger">
+                            Xoá tài khoản
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Nếu muốn giữ lại phần gói đã mua & API key thì để dưới này (tuỳ bạn): -->
+                <div class="account-sections">
+                    <div class="account-card">
+                        <h3>Các gói</h3>
+                        <div class="purchase-list" id="purchaseList">
+                            <!-- Render lịch sử mua ở đây -->
+                        </div>
+                    </div>
+
+                    <div class="account-card">
+                        <h3>API Key của bạn</h3>
+                        <button id="createApiKeyBtn" class="btn-account primary small">
+                            Tạo API Key mới
+                        </button>
+                        <div id="apiKeyList" class="api-key-list">
+                            <!-- Danh sách key sẽ được load ở đây -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+    </div>
+
+    <!-- Cart Modal -->
+    <div class="modal" id="cartModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Giỏ hàng</h2>
+                <button class="close-btn" id="closeCartBtn">&times;</button>
+            </div>
+            <div class="cart-items" id="cartItems">
+                <p class="empty-cart">Giỏ hàng trống</p>
+            </div>
+            <div class="cart-footer">
+                <div class="cart-total">
+                    <span>Tổng cộng:</span>
+                    <span id="cartTotal">0</span>
+                </div>
+
+                <button class="checkout-btn">Thanh toán</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Package Detail Modal -->
+    <div class="modal" id="detailModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="detailTitle">Chi tiết gói</h2>
+                <button class="close-btn" id="closeDetailBtn">&times;</button>
+            </div>
+            <div class="detail-content" id="detailContent">
+                <!-- Detail will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+    <script src="js/consumers.js"></script>
+    <script src="js/analytic.js"></script>
+    <script src="js/purchases.js"></script>
+    <script src="js/ai-chats.js"></script>
+    <script src="js/api_keys.js"></script>
+    <script src="js/account.js"></script>
+
+    <!-- Modal Chỉnh sửa hồ sơ -->
+    <div class="account-modal" id="profileModal">
+        <div class="account-modal-backdrop" data-close="profileModal"></div>
+        <div class="account-modal-dialog">
+            <div class="account-modal-header">
+                <h2>Chỉnh sửa hồ sơ</h2>
+                <button class="account-modal-close" data-close="profileModal">✕</button>
+            </div>
+            <form id="profileForm" class="account-modal-body">
+                <div class="form-group">
+                    <label for="profileName">Họ và tên</label>
+                    <input type="text" id="profileName" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="profileEmail">Email</label>
+                    <input type="email" id="profileEmail" name="email" required>
+                </div>
+                <div class="account-modal-footer">
+                    <button type="button" class="btn-account outline" data-close="profileModal">Huỷ</button>
+                    <button type="submit" class="btn-account primary">Lưu thay đổi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Đổi mật khẩu -->
+    <div class="account-modal" id="passwordModal">
+        <div class="account-modal-backdrop" data-close="passwordModal"></div>
+        <div class="account-modal-dialog">
+            <div class="account-modal-header">
+                <h2>Đổi mật khẩu</h2>
+                <button class="account-modal-close" data-close="passwordModal">✕</button>
+            </div>
+            <form id="passwordForm" class="account-modal-body">
+                <div class="form-group">
+                    <label for="currentPassword">Mật khẩu hiện tại</label>
+                    <input type="password" id="currentPassword" name="current_password" required>
+                </div>
+                <div class="form-group">
+                    <label for="newPassword">Mật khẩu mới</label>
+                    <input type="password" id="newPassword" name="new_password" required minlength="8">
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Nhập lại mật khẩu mới</label>
+                    <input type="password" id="confirmPassword" name="confirm_password" required minlength="8">
+                </div>
+                <div class="account-modal-footer">
+                    <button type="button" class="btn-account outline" data-close="passwordModal">Huỷ</button>
+                    <button type="submit" class="btn-account primary">Đổi mật khẩu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Xoá tài khoản -->
+    <div class="account-modal" id="deleteModal">
+        <div class="account-modal-backdrop" data-close="deleteModal"></div>
+        <div class="account-modal-dialog">
+            <div class="account-modal-header">
+                <h2>Xoá tài khoản</h2>
+                <button class="account-modal-close" data-close="deleteModal">✕</button>
+            </div>
+            <form id="deleteForm" class="account-modal-body">
+                <p class="warning-text">
+                    Hành động này <strong>không thể hoàn tác</strong>. Tất cả dữ liệu liên quan đến tài khoản của bạn sẽ
+                    bị xoá.
+                </p>
+                <div class="form-group">
+                    <label for="deletePassword">Nhập mật khẩu để xác nhận</label>
+                    <input type="password" id="deletePassword" name="password" required>
+                </div>
+                <div class="account-modal-footer">
+                    <button type="button" class="btn-account outline" data-close="deleteModal">Huỷ</button>
+                    <button type="submit" class="btn-account danger">Tôi hiểu, xoá tài khoản</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+    document.getElementById("logoutBtn").addEventListener("click", function () {
+        window.location.href = "http://localhost:8006/src/pages/home.php";
+    });
+</script>
+
+
+
+
+</body>
+
+</html>

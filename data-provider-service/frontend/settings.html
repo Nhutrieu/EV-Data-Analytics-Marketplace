@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EV Data Marketplace - Cài đặt</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">⚡ EV DATA</div>
+                <h2>Data Provider Portal</h2>
+            </div>
+            <ul class="sidebar-nav">
+                <li><a href="data.html" class="nav-link"><i class="fas fa-database"></i> Quản lý Dữ liệu</a></li>
+                <li><a href="pricing.html" class="nav-link"><i class="fas fa-tag"></i> Chính sách & Giá</a></li>
+                <li><a href="revenue.html" class="nav-link"><i class="fas fa-money-bill-wave"></i> Doanh thu</a></li>
+                <li><a href="privacy.html" class="nav-link"><i class="fas fa-shield-alt"></i> Bảo mật</a></li>
+                <li><a href="settings.html" class="nav-link active"><i class="fas fa-cog"></i> Cài đặt</a></li>
+                <li><a href="http://localhost:8006/src/pages/home.php" class="nav-link"><i class="fas fa-cog"></i> Đăng xuất</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="content-header">
+                <div class="header-left">
+                    <h1>Cài đặt Tài khoản</h1>
+                    <p>Quản lý thông tin tài khoản và cài đặt hệ thống</p>
+                </div>
+
+            </header>
+
+            <div class="content-area">
+                <!-- Thông tin công ty -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Thông tin Công ty</div>
+                    </div>
+                    <form id="company-form">
+                        <div class="form-group">
+                            <label class="form-label">Tên công ty *</label>
+                            <input type="text" id="company-name" class="form-control" value="EV Data Corp" required>
+                            <small style="color: var(--gray-light);">Tên này sẽ hiển thị trên tất cả các trang</small>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div class="form-group">
+                                <label class="form-label">Email liên hệ *</label>
+                                <input type="email" id="company-email" class="form-control"
+                                    value="contact@evdatacorp.com" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Số điện thoại</label>
+                                <input type="tel" id="company-phone" class="form-control" value="+84 123 456 789">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Người liên hệ *</label>
+                            <input type="text" id="contact-person" class="form-control" value="Nguyễn Văn A" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Địa chỉ</label>
+                            <textarea id="company-address" class="form-control" rows="2">Hà Nội, Việt Nam</textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Mô tả công ty</label>
+                            <textarea id="company-description" class="form-control" rows="3"
+                                placeholder="Mô tả về công ty của bạn...">Cung cấp dữ liệu EV chất lượng cao cho thị trường</textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Cập nhật Thông tin
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Thông tin đăng nhập -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Thông tin Đăng nhập</div>
+                    </div>
+                    <form id="login-form">
+                        <div class="form-group">
+                            <label class="form-label">Email đăng nhập</label>
+                            <input type="email" class="form-control" value="admin@evdatacorp.com" readonly>
+                            <small style="color: var(--gray-light);">Email này dùng để đăng nhập vào hệ thống</small>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div class="form-group">
+                                <label class="form-label">Mật khẩu mới</label>
+                                <input type="password" id="new-password" class="form-control"
+                                    placeholder="Nhập mật khẩu mới">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Xác nhận mật khẩu</label>
+                                <input type="password" id="confirm-password" class="form-control"
+                                    placeholder="Xác nhận mật khẩu">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-key"></i> Đổi Mật khẩu
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Cài đặt hệ thống -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Cài đặt Hệ thống</div>
+                    </div>
+                    <form id="system-settings-form">
+                        <div class="form-group">
+                            <label class="form-label">Múi giờ</label>
+                            <select class="form-control" id="timezone">
+                                <option value="+7" selected>GMT+7 (Việt Nam)</option>
+                                <option value="+0">GMT+0 (London)</option>
+                                <option value="-5">GMT-5 (New York)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Định dạng ngày</label>
+                            <select class="form-control" id="date-format">
+                                <option value="dd/mm/yyyy" selected>DD/MM/YYYY</option>
+                                <option value="mm/dd/yyyy">MM/DD/YYYY</option>
+                                <option value="yyyy-mm-dd">YYYY-MM-DD</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Đơn vị tiền tệ</label>
+                            <select class="form-control" id="currency">
+                                <option value="VND" selected>VND (₫)</option>
+                                <option value="USD">USD ($)</option>
+                                <option value="EUR">EUR (€)</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Lưu Cài đặt
+                        </button>
+                    </form>
+                </div>
+
+
+                <!-- Khu vực nguy hiểm -->
+                <div class="card" style="border-color: #ef4444;">
+                    <div class="card-header">
+                        <div class="card-title" style="color: #ef4444;">Khu vực Nguy hiểm</div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        <div>
+                            <h4 style="color: var(--white); margin-bottom: 0.5rem;">Đăng xuất khỏi tất cả thiết bị</h4>
+                            <p style="color: var(--gray-light); margin-bottom: 1rem;">
+                                Đăng xuất khỏi tất cả các thiết bị đang đăng nhập.
+                            </p>
+                            <button class="btn btn-outline" onclick="logoutAllDevices()">
+                                <i class="fas fa-sign-out-alt"></i> Đăng xuất Tất cả
+                            </button>
+                        </div>
+
+                        <div style="border-top: 1px solid #334155; padding-top: 1rem;">
+                            <h4 style="color: #ef4444; margin-bottom: 0.5rem;">Xóa tài khoản</h4>
+                            <p style="color: var(--gray-light); margin-bottom: 1rem;">
+                                Khi xóa tài khoản, tất cả dữ liệu sẽ bị mất vĩnh viễn. Hành động này không thể hoàn tác.
+                            </p>
+                            <button class="btn" style="background: #ef4444; color: white;" onclick="deleteAccount()">
+                                <i class="fas fa-trash"></i> Xóa Tài khoản
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/setting.js"></script>
+
+</html>

@@ -1,0 +1,6 @@
+RewriteEngine On
+# Nếu file hay thư mục tồn tại thì giữ nguyên
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+# Redirect mọi request về index.php
+RewriteRule ^ index.php [L]

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EV Data Marketplace - Doanh thu</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">⚡ EV DATA</div>
+                <h2>Data Provider Portal</h2>
+            </div>
+            <ul class="sidebar-nav">
+                <li><a href="data.html" class="nav-link"><i class="fas fa-database"></i> Quản lý Dữ liệu</a></li>
+                <li><a href="pricing.html" class="nav-link"><i class="fas fa-tag"></i> Chính sách & Giá</a></li>
+                <li><a href="revenue.html" class="nav-link active"><i class="fas fa-money-bill-wave"></i> Doanh thu</a>
+                </li>
+                <li><a href="privacy.html" class="nav-link"><i class="fas fa-shield-alt"></i> Bảo mật</a></li>
+                <li><a href="settings.html" class="nav-link"><i class="fas fa-cog"></i> Cài đặt</a></li>
+                <li><a href="http://localhost:8006/src/pages/home.php" class="nav-link"><i class="fas fa-cog"></i> Đăng xuất</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="content-header">
+                <div class="header-left">
+                    <h1>Doanh thu</h1>
+                    <p>Thống kê và phân tích doanh thu</p>
+                </div>
+
+            </header>
+
+            <div class="content-area">
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="revenue-total">0 VND</div>
+                        <div class="stat-label">Tổng doanh thu</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="revenue-downloads">0</div>
+                        <div class="stat-label">Số lượt tải</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="revenue-downloads">0</div>
+                        <div class="stat-label">Doanh thu theo lợi nhuận</div>
+                    </div>
+                </div>
+
+                <!-- Biểu đồ doanh thu -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Doanh thu 12 tháng gần nhất</div>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <select id="chart-type" class="form-control" style="width: 150px;"
+                                onchange="updateChartType()">
+                                <option value="line">Biểu đồ đường</option>
+                                <option value="bar">Biểu đồ cột</option>
+                            </select>
+                            <button class="btn btn-outline" onclick="exportChart()">
+                                <i class="fas fa-download"></i> Export
+                            </button>
+                        </div>
+                    </div>
+                    <div style="padding: 1rem;">
+                        <canvas id="revenueChart" height="300"></canvas>
+                    </div>
+                </div>
+
+                <!-- Top dữ liệu bán chạy -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Top dữ liệu bán chạy</div>
+                    </div>
+                    <div style="padding: 1rem;">
+                        <canvas id="topProductsChart" height="250"></canvas>
+                    </div>
+                </div>
+
+                <!-- Lịch sử giao dịch (sau này có thể nối API riêng) -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Khách hàng mua dữ liệu</div>
+                        <a href="#" class="btn btn-outline">Xem tất cả</a>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Ngày</th>
+                                <th>Bộ dữ liệu</th>
+                                <th>Khách hàng</th>
+                                <th>Loại</th>
+                                <th>Số tiền</th>
+                                <th>Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody id="revenue-transactions-body">
+                            <!-- Sau này mình có thể load từ API /transactions -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/main.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/revenue.js"></script>
+</body>
+
+</html>

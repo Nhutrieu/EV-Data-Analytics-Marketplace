@@ -1,0 +1,14 @@
+APP_ENV=local
+APP_DEBUG=true
+APP_PORT=80
+
+DB_HOST=mysql
+DB_PORT=3306
+DB_DATABASE=ev_database
+DB_USERNAME=root
+DB_PASSWORD=secret
+
+JWT_SECRET=your_very_secret_key_here
+JWT_ISSUER=http://auth-service
+JWT_AUDIENCE=http://ev-data-marketplace
+JWT_EXP=3600

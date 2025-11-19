@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EV Data Marketplace - Quản lý Dữ liệu</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">⚡ EV DATA</div>
+                <h2>Data Provider Portal</h2>
+            </div>
+            <ul class="sidebar-nav">
+                <li><a href="data.html" class="nav-link active"><i class="fas fa-database"></i> Quản lý Dữ liệu</a></li>
+                <li><a href="pricing.html" class="nav-link"><i class="fas fa-tag"></i> Chính sách & Giá</a></li>
+                <li><a href="revenue.html" class="nav-link"><i class="fas fa-money-bill-wave"></i> Doanh thu</a></li>
+                <li><a href="privacy.html" class="nav-link"><i class="fas fa-shield-alt"></i> Bảo mật</a></li>
+                <li><a href="settings.html" class="nav-link"><i class="fas fa-cog"></i> Cài đặt</a></li>
+                <li><a href="http://localhost:8006/src/pages/home.php" class="nav-link"><i class="fas fa-cog"></i> Đăng xuất</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="content-header">
+                <div class="header-left">
+                    <h1>Quản lý Dữ liệu</h1>
+                    <p>Thêm và quản lý các bộ dữ liệu EV</p>
+                </div>
+
+            </header>
+
+            <div class="content-area">
+                <!-- Form thêm dữ liệu -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Thêm dữ liệu mới</div>
+                    </div>
+                    <form id="add-data-form">
+                        <div class="form-group">
+                            <label class="form-label">Tên bộ dữ liệu *</label>
+                            <input type="text" id="data-name" class="form-control" placeholder="Nhập tên bộ dữ liệu"
+                                required>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div class="form-group">
+                                <label class="form-label">Loại dữ liệu *</label>
+                                <select id="data-type" class="form-control" required>
+                                    <option value="">Chọn loại</option>
+                                    <option value="battery">Dữ liệu pin</option>
+                                    <option value="driving">Hành vi lái xe</option>
+                                    <option value="charging">Sử dụng trạm sạc</option>
+                                    <option value="v2g">Giao dịch V2G</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Định dạng *</label>
+                                <select id="data-format" class="form-control" required>
+                                    <option value="">Chọn định dạng</option>
+                                    <option value="raw">Dữ liệu thô</option>
+                                    <option value="analyzed">Đã phân tích</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div class="form-group">
+                                <label class="form-label">Giá (VND) *</label>
+                                <input type="number" id="data-price" class="form-control" placeholder="Nhập giá" min="0"
+                                    required>
+                                <small style="color: var(--gray-light); margin-top: 0.25rem; display: block;">
+                                    Giá mặc định: <span id="default-price-display"
+                                        style="color: var(--accent); font-weight: 600;">500,000 VND</span>
+                                    <a href="pricing.html"
+                                        style="color: var(--accent); margin-left: 0.5rem; text-decoration: none;">
+                                        <i class="fas fa-cog"></i> Thay đổi
+                                    </a>
+                                </small>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Đơn vị giá</label>
+                                <select id="price-unit" class="form-control">
+                                    <option value="per-download">Theo lượt tải</option>
+                                    <option value="subscription">Theo tháng</option>
+                                    <option value="one-time">Theo năm</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Tải lên file dữ liệu *</label>
+                            <div class="file-upload-area" id="file-upload-area">
+                                <div class="file-upload-content">
+                                    <i class="fas fa-cloud-upload-alt"
+                                        style="font-size: 2rem; color: var(--accent); margin-bottom: 1rem;"></i>
+                                    <p>Kéo thả file vào đây hoặc <span
+                                            style="color: var(--accent); cursor: pointer;">chọn file</span></p>
+                                    <small style="color: var(--gray-light);">Hỗ trợ: CSV, JSON, XLSX (Tối đa
+                                        100MB)</small>
+                                </div>
+                                <input type="file" id="data-file" accept=".csv,.json,.xlsx,.xls" style="display: none;">
+                            </div>
+                            <div id="file-info"
+                                style="display: none; margin-top: 1rem; padding: 1rem; background: rgba(37, 99, 235, 0.1); border-radius: 6px;">
+                                <div style="display: flex; justify-content: between; align-items: center;">
+                                    <div>
+                                        <i class="fas fa-file" style="color: var(--accent); margin-right: 0.5rem;"></i>
+                                        <span id="file-name" style="font-weight: 600;"></span>
+                                        <span id="file-size"
+                                            style="color: var(--gray-light); margin-left: 1rem;"></span>
+                                    </div>
+                                    <button type="button" onclick="removeFile()" class="btn"
+                                        style="background: transparent; color: var(--gray-light); padding: 0.25rem;">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Mô tả</label>
+                            <textarea id="data-description" class="form-control" rows="3"
+                                placeholder="Mô tả về bộ dữ liệu..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Tags (Từ khóa)</label>
+                            <input type="text" id="data-tags" class="form-control"
+                                placeholder="Nhập tags cách nhau bằng dấu phẩy">
+                        </div>
+
+                        <div style="display: flex; gap: 1rem;">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> Thêm dữ liệu
+                            </button>
+                            <button type="button" class="btn btn-outline" onclick="resetForm()">
+                                <i class="fas fa-redo"></i> Làm mới
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Danh sách dữ liệu -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Danh sách dữ liệu</div>
+                        <div style="display: flex; gap: 0.5rem; align-items: center;">
+                            <input type="text" id="search-data" class="form-control" placeholder="Tìm kiếm..."
+                                style="width: 200px;">
+                            <button class="btn btn-outline" onclick="refreshData()">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Tên bộ dữ liệu</th>
+                                <th>Loại dữ liệu</th>
+                                <th>Định dạng</th>
+                                <th>File</th>
+                                <th>Giá</th>
+                                <th>Hình thức</th>
+                                <th>Trạng thái</th>
+                                <th>Lượt tải</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="data-sources-body">
+                            <!-- Data will be loaded by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal chỉnh sửa dữ liệu -->
+    <div id="edit-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Chỉnh sửa Dữ liệu</h3>
+                <button class="close-btn" onclick="closeEditModal()">&times;</button>
+            </div>
+            <form id="edit-data-form">
+                <input type="hidden" id="edit-data-id">
+
+                <!-- Thông tin cơ bản - Provider có thể sửa -->
+                <div class="form-group">
+                    <label class="form-label">Tên bộ dữ liệu *</label>
+                    <input type="text" id="edit-data-name" class="form-control" required>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label class="form-label">Loại dữ liệu *</label>
+                        <select id="edit-data-type" class="form-control" required>
+                            <option value="battery">Dữ liệu pin</option>
+                            <option value="driving">Hành vi lái xe</option>
+                            <option value="charging">Sử dụng trạm sạc</option>
+                            <option value="v2g">Giao dịch V2G</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Định dạng *</label>
+                        <select id="edit-data-format" class="form-control" required>
+                            <option value="raw">Dữ liệu thô</option>
+                            <option value="analyzed">Đã phân tích</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label class="form-label">Giá (VND) *</label>
+                        <input type="number" id="edit-data-price" class="form-control" min="0" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Đơn vị giá *</label>
+                        <select id="edit-price-unit" class="form-control" required>
+                            <option value="per-download">Theo lượt tải</option>
+                            <option value="subscription">Theo tháng</option>
+                            <option value="one-time">Một lần</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Mô tả</label>
+                    <textarea id="edit-data-description" class="form-control" rows="3"></textarea>
+                </div>
+
+                <!-- Thông tin trạng thái - Chỉ hiển thị, không thể sửa -->
+                <div class="status-section">
+                    <h4 style="color: var(--white); margin-bottom: 1rem;">Thông tin Trạng thái</h4>
+
+                    <!-- Hiển thị thông tin trạng thái -->
+                    <div id="status-info" class="status-info">
+                        <!-- Thông tin trạng thái sẽ được hiển thị ở đây -->
+                    </div>
+
+                    <!-- Control tạm ngừng - Chỉ hiển thị khi đã được duyệt -->
+                    <div id="pause-control" class="form-group" style="display: none; margin-top: 1rem;">
+                        <label class="form-label">Điều khiển hoạt động</label>
+                        <div style="display: flex; gap: 1rem; align-items: center;">
+                            <button type="button" id="pause-btn" class="btn btn-outline" onclick="togglePauseData()">
+                                <i class="fas fa-pause"></i> Tạm ngừng
+                            </button>
+                            <button type="button" id="resume-btn" class="btn btn-primary" onclick="toggleResumeData()"
+                                style="display: none;">
+                                <i class="fas fa-play"></i> Tiếp tục
+                            </button>
+                            <small style="color: var(--gray-light);">
+                                Chỉ có thể tạm ngừng khi dữ liệu đã được admin duyệt
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem;">
+                    <button type="button" class="btn btn-outline" onclick="closeEditModal()">Hủy</button>
+                    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/main.js"></script>
+
+
+    <style>
+        .file-upload-area {
+            border: 2px dashed #334155;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-upload-area:hover {
+            border-color: var(--primary);
+            background: rgba(37, 99, 235, 0.05);
+        }
+
+        .file-upload-area.dragover {
+            border-color: var(--accent);
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: var(--dark-light);
+            border-radius: 12px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #334155;
+        }
+
+        .modal-header h3 {
+            color: var(--white);
+            margin: 0;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--gray-light);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn:hover {
+            color: var(--white);
+        }
+
+        .price-badge {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+    </style>
+</body>
+
+</html>
