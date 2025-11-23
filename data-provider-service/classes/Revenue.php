@@ -52,6 +52,7 @@ class Revenue
      *
      * - total_transactions: số lượt mua / tải (giao dịch completed)
      * - total_revenue: tổng amount
+     * - total_profit: tổng lợi nhuận
      * - total_datasets: số dataset đã có ít nhất 1 giao dịch
      * - total_buyers: số khách hàng khác nhau (buyer)
      */
@@ -67,6 +68,7 @@ class Revenue
             SELECT
                 COUNT(t.id)                      AS total_transactions,
                 COALESCE(SUM(t.amount), 0)       AS total_revenue,
+                COALESCE(SUM(t.profit), 0)       AS total_profit,
                 COUNT(DISTINCT t.dataset_id)     AS total_datasets,
                 COUNT(DISTINCT t.buyer)          AS total_buyers
             FROM {$this->tableTx} t
@@ -84,6 +86,7 @@ class Revenue
             return [
                 'total_transactions' => 0,
                 'total_revenue'      => 0,
+                'total_profit'       => 0,
                 'total_datasets'     => 0,
                 'total_buyers'       => 0,
             ];
@@ -92,6 +95,7 @@ class Revenue
         // Ép kiểu cho chắc
         $row['total_transactions'] = (int) ($row['total_transactions'] ?? 0);
         $row['total_revenue']      = (int) ($row['total_revenue']      ?? 0);
+        $row['total_profit']       = (int) ($row['total_profit']       ?? 0);
         $row['total_datasets']     = (int) ($row['total_datasets']     ?? 0);
         $row['total_buyers']       = (int) ($row['total_buyers']       ?? 0);
 
@@ -101,6 +105,14 @@ class Revenue
     /**
      * Doanh thu theo dataset (top bán chạy / chart)
      * Lấy tất cả dataset thuộc provider, kể cả dataset chưa có giao dịch.
+     *
+     * Mỗi dòng trả về:
+     * - dataset_id
+     * - name, type, price
+     * - transactions: số giao dịch
+     * - revenue: tổng amount
+     * - profit: tổng lợi nhuận
+     * - last_purchase_at: lần mua gần nhất (hoặc null)
      */
     public function getRevenueByDataset(?string $from, ?string $to): array
     {
@@ -119,6 +131,7 @@ class Revenue
                 d.price           AS price,
                 COUNT(t.id)       AS transactions,
                 COALESCE(SUM(t.amount), 0) AS revenue,
+                COALESCE(SUM(t.profit), 0) AS profit,
                 MAX(t.timestamp)  AS last_purchase_at
             FROM {$this->tableDs} d
             LEFT JOIN {$this->tableTx} t
@@ -140,6 +153,7 @@ class Revenue
             $r['price']        = (int) ($r['price']        ?? 0);
             $r['transactions'] = (int) ($r['transactions'] ?? 0);
             $r['revenue']      = (int) ($r['revenue']      ?? 0);
+            $r['profit']       = (int) ($r['profit']       ?? 0);
         }
 
         return $rows;
@@ -150,6 +164,7 @@ class Revenue
      *
      * - Mặc định: 12 tháng tính tới tháng hiện tại (không phụ thuộc from/to của dashboard).
      * - Kể cả những tháng không có doanh thu vẫn trả về revenue = 0.
+     * - Trả thêm profit để có thể vẽ biểu đồ lợi nhuận.
      */
     public function getMonthlyRevenueLast12(): array
     {
@@ -162,7 +177,8 @@ class Revenue
             SELECT
                 YEAR(t.timestamp)  AS year,
                 MONTH(t.timestamp) AS month,
-                COALESCE(SUM(t.amount), 0) AS revenue
+                COALESCE(SUM(t.amount), 0) AS revenue,
+                COALESCE(SUM(t.profit), 0) AS profit
             FROM {$this->tableTx} t
             INNER JOIN {$this->tableDs} d ON d.id = t.dataset_id
             WHERE d.provider_id = :pid
@@ -176,13 +192,16 @@ class Revenue
         $stmt->execute($params);
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        // Map YYYY-MM → revenue
+        // Map YYYY-MM → [revenue, profit]
         $map = [];
         foreach ($rows as $r) {
             $y   = (int) $r['year'];
             $m   = (int) $r['month'];
             $key = sprintf('%04d-%02d', $y, $m);
-            $map[$key] = (int) ($r['revenue'] ?? 0);
+            $map[$key] = [
+                'revenue' => (int) ($r['revenue'] ?? 0),
+                'profit'  => (int) ($r['profit']  ?? 0),
+            ];
         }
 
         // Build đủ 12 tháng liên tục (kể cả tháng chưa có doanh thu)
@@ -199,7 +218,8 @@ class Revenue
                 'year'    => $year,
                 'month'   => $month,
                 'label'   => 'T' . $month,   // Label cho chart (vd: T1, T2, ...)
-                'revenue' => $map[$key] ?? 0,
+                'revenue' => $map[$key]['revenue'] ?? 0,
+                'profit'  => $map[$key]['profit']  ?? 0,
             ];
 
             $current->modify('+1 month');
@@ -235,6 +255,7 @@ class Revenue
                 t.amount,
                 t.method,
                 t.status,
+                t.profit,
                 d.name  AS dataset_name,
                 d.type  AS dataset_type
             FROM {$this->tableTx} t
@@ -264,6 +285,7 @@ class Revenue
         foreach ($rows as &$r) {
             $r['id']     = (int) ($r['id']     ?? 0);
             $r['amount'] = (int) ($r['amount'] ?? 0);
+            $r['profit'] = (int) ($r['profit'] ?? 0);
         }
 
         return $rows;

@@ -26,7 +26,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                 'role' => 'admin',
                 'Quyen' => $admin['Quyen']
             ];
-            header('Location: admin.php');
+            header('Location: http://localhost:8004/admin_dashboard.php');
             exit;
         }
         // Nếu DB dùng plaintext (tạm thời)
@@ -39,7 +39,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                 'role' => 'admin',
                 'Quyen' => $admin['Quyen']
             ];
-            header('Location: admin.php');
+            header('Location: http://localhost:8004/admin_dashboard.php');
             exit;
         }
     }
@@ -57,7 +57,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                 'username' => $user['username'],
                 'role' => $user['role']
             ];
-            header('Location: home_logged.php');
+            header('Location: http://localhost:8009/public/consumer.html');
             exit;
         }
     }
@@ -75,7 +75,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                 'username' => $prov['name'],
                 'role' => 'provider'
             ];
-            header('Location: provider_dashboard.php');
+            header('Location: http://localhost:8008/frontend/data.html');
             exit;
         }
     }

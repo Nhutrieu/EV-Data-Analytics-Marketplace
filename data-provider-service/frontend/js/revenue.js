@@ -171,12 +171,16 @@ async function loadRevenueDashboard() {
         // Cards
         const totalRevenueEl = document.getElementById("revenue-total");
         const downloadsEl = document.getElementById("revenue-downloads");
+        const profitEl = document.getElementById("revenue-profit"); // THÊM DÒNG NÀY
 
         if (totalRevenueEl) {
             totalRevenueEl.textContent = formatVND(summary.total_revenue || 0);
         }
         if (downloadsEl) {
             downloadsEl.textContent = summary.total_transactions || 0;
+        }
+        if (profitEl) { // THÊM KHỐI NÀY
+            profitEl.textContent = formatVND(summary.total_profit || 0);
         }
 
         // Charts
@@ -271,3 +275,4 @@ function renderTransactionsTable(list) {
         tbody.appendChild(tr);
     });
 }
+

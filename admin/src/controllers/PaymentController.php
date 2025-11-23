@@ -102,29 +102,34 @@ function showTransactions() {
     }
     echo "</table>";
 }
-
 function showRevenueShare() {
     global $pdo;
     echo "<h2>💸 Chia sẻ doanh thu cho Providers</h2>";
 
-    // Đọc tỉ lệ chia từ config.php (mặc định 70%)
+    // Đọc config an toàn
     $cfgPath = __DIR__ . '/../config.php';
-    $cfg = file_exists($cfgPath) ? require $cfgPath : ['provider_share_pct' => 70];
-    $share_pct = $cfg['provider_share_pct'];
+    $cfg = file_exists($cfgPath) ? require $cfgPath : [];
 
-    // ✅ Lấy dữ liệu từ bảng transactions + datasets + users, và tính toán chia sẻ trực tiếp
-    $stmt = $pdo->query("
+    // Lấy tỉ lệ chia, có default 70%
+    $share_pct = isset($cfg['provider_share_pct']) 
+        ? (float)$cfg['provider_share_pct'] 
+        : 70;
+
+    // Dùng prepared statement + bind param
+    $sql = "
         SELECT 
             t.id AS id,
             u.name AS provider,
-            ROUND(t.amount * $share_pct / 100, 2) AS share_amount,
+            ROUND(t.amount * :share_pct / 100, 2) AS share_amount,
             t.created_at
         FROM transactions t
         JOIN datasets d ON d.id = t.dataset_id
         JOIN users u ON u.id = d.provider_id
         ORDER BY t.created_at DESC
-    ");
+    ";
 
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([':share_pct' => $share_pct]);
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     if (!$rows) {
@@ -132,7 +137,6 @@ function showRevenueShare() {
         return;
     }
 
-    // ✅ Hiển thị bảng kết quả
     echo "<table border='1' cellpadding='8' cellspacing='0'>";
     echo "<tr style='background:#28a745;color:white;'>
             <th>ID</th>
