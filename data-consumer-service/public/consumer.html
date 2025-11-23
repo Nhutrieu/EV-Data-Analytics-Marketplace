@@ -73,8 +73,8 @@
                     <label>Định dạng:</label>
                     <select id="formatFilter">
                         <option value="">Tất cả</option>
-                        <option value="csv">CSV</option>
-                        <option value="json">JSON</option>
+                        <option value="csv">Dữ liệu thô</option>
+                        <option value="json">Đã phân tích</option>
                     </select>
                 </div>
                 <button class="apply-filter-btn" id="applyFilterBtn">Áp dụng</button>
@@ -352,10 +352,10 @@
         </div>
     </div>
     <script>
-    document.getElementById("logoutBtn").addEventListener("click", function () {
-        window.location.href = "http://localhost:8006/src/pages/home.php";
-    });
-</script>
+        document.getElementById("logoutBtn").addEventListener("click", function () {
+            window.location.href = "http://localhost:8006/src/pages/home.php";
+        });
+    </script>
 
 
 

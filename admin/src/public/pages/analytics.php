@@ -73,19 +73,3 @@ new Chart(ctx, {
     }
 });
 </script>
-
-<h3 style="margin-top:40px;">🔥 Top 10 Dataset được mua nhiều nhất</h3>
-<table border="1" cellpadding="8" cellspacing="0" style="border-collapse:collapse;width:100%;background:#161b22;color:white;">
-    <tr style="background:#238636;color:white;">
-        <th>ID</th>
-        <th>Tiêu đề Dataset</th>
-        <th>Lượt mua</th>
-    </tr>
-    <?php foreach ($stats['top_by_purchases'] as $r): ?>
-        <tr>
-            <td><?= $r['id'] ?></td>
-            <td><?= htmlspecialchars($r['title']) ?></td>
-            <td><?= $r['purchases'] ?></td>
-        </tr>
-    <?php endforeach; ?>
-</table>
