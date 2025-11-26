@@ -3,11 +3,19 @@ version: '3.9'
 services:
 
   # =====================================================
+<<<<<<< HEAD
   # 1. ADMIN DB + ADMIN SERVICE
   # =====================================================
   db_admin:
     image: mysql:8.0
     container_name: dm_db_admin
+=======
+  # 1. ADMIN GROUP
+  # =====================================================
+  db:
+    image: mysql:8.0
+    container_name: dm_db
+>>>>>>> b2b62b30502933ce69778733bd55f2cea706a8e3
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
@@ -16,26 +24,40 @@ services:
       MYSQL_PASSWORD: dmpass
     volumes:
       - ./db/init_admin_service.sql:/docker-entrypoint-initdb.d/init_admin_service.sql
+<<<<<<< HEAD
       - db_admin_data:/var/lib/mysql
+=======
+>>>>>>> b2b62b30502933ce69778733bd55f2cea706a8e3
     ports:
       - "3310:3306"
     networks:
       - admin_network
+<<<<<<< HEAD
       - evnet
 
   admin_service:
+=======
+      - evnet # <-- thêm để dùng chung DB khi cần
+
+  admin-service:
+>>>>>>> b2b62b30502933ce69778733bd55f2cea706a8e3
     build:
       context: ./admin
       dockerfile: Dockerfile
     container_name: admin_service
     restart: always
     depends_on:
+<<<<<<< HEAD
       - db_admin
+=======
+      - db
+>>>>>>> b2b62b30502933ce69778733bd55f2cea706a8e3
     volumes:
       - ./admin/src:/var/www/html
     ports:
       - "8004:80"
     environment:
+<<<<<<< HEAD
       DB_HOST: db_admin
       DB_USER: dmuser
       DB_PASS: dmpass
@@ -56,16 +78,46 @@ services:
     restart: always
     environment:
       PMA_HOST: db_admin
+=======
+      DB_HOST: db
+      DB_USER: dmuser
+      DB_PASS: dmpass
+      DB_NAME: data_marketplace
+
+      PROVIDER_DB_HOST: db_provider # 👈 DB của provider
+      PROVIDER_DB_NAME: ev_data_marketplace
+      PROVIDER_DB_USER: ev_user
+      PROVIDER_DB_PASS: ev_pass
+
+      ENCRYPT_KEY: change_this_32_chars_min
+    networks:
+      - admin_network
+      - evnet # <-- Quan trọng! để gateway truy cập được
+
+    user: "33:33"
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:5.2.1
+    container_name: admin_phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: db
+>>>>>>> b2b62b30502933ce69778733bd55f2cea706a8e3
       PMA_USER: dmuser
       PMA_PASSWORD: dmpass
     ports:
       - "8081:80"
     depends_on:
+<<<<<<< HEAD
       - db_admin
+=======
+      - db
+>>>>>>> b2b62b30502933ce69778733bd55f2cea706a8e3
     networks:
       - admin_network
 
   # =====================================================
+<<<<<<< HEAD
   # 2. PROVIDER SERVICE + DB
   # =====================================================
   db_provider:
@@ -96,6 +148,21 @@ services:
       - ./data-provider-service:/var/www/html
     environment:
       DB_HOST: db_provider
+=======
+  # 2. EV DATA ANALYTICS – CONSUMER + PROVIDER
+  # =====================================================
+  provider:
+    build:
+      context: ./data-provider-service
+      dockerfile: Dockerfile
+    container_name: ev-provider
+    ports:
+      - "8008:80"
+    volumes:
+      - ./data-provider-service:/var/www/html
+    environment:
+      DB_HOST: db_provider # ĐỔI NÈ
+>>>>>>> b2b62b30502933ce69778733bd55f2cea706a8e3
       DB_NAME: ev_data_marketplace
       DB_USER: ev_user
       DB_PASS: ev_pass
@@ -104,9 +171,76 @@ services:
     networks:
       - evnet
 
+<<<<<<< HEAD
   phpmyadmin_provider:
     image: phpmyadmin/phpmyadmin
     container_name: phpmyadmin_provider
+=======
+  consumer:
+    build:
+      context: ./data-consumer-service
+      dockerfile: Dockerfile
+    container_name: ev-consumer
+    ports:
+      - "8009:80"
+    volumes:
+      - ./data-consumer-service:/var/www/html
+    environment:
+      DB_HOST: db_consumer # ĐỔI NÈ
+      DB_NAME: ev_analytics
+      DB_USER: ev_user
+      DB_PASS: ev_pass
+
+      PROVIDER_DB_HOST: db_provider # 👈 thêm
+      PROVIDER_DB_NAME: ev_data_marketplace
+      PROVIDER_DB_USER: ev_user
+      PROVIDER_DB_PASS: ev_pass
+    depends_on:
+      - db_consumer
+    networks:
+      - evnet
+
+  # DB cho PROVIDER
+  db_provider:
+    image: mysql:8.0
+    container_name: ev-db-provider
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: ev_data_marketplace # DB chính cho provider
+      MYSQL_USER: ev_user
+      MYSQL_PASSWORD: ev_pass
+    ports:
+      - "3307:3306" # Nếu cần truy cập từ ngoài; nếu không cần thì có thể bỏ luôn dòng này
+    volumes:
+      - db_provider_data:/var/lib/mysql
+      - ./database/provider_schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    networks:
+      - evnet
+
+  # DB cho CONSUMER
+  db_consumer:
+    image: mysql:8.0
+    container_name: ev-db-consumer
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: ev_analytics # DB chính cho consumer
+      MYSQL_USER: ev_user
+      MYSQL_PASSWORD: ev_pass
+    ports:
+      - "3308:3306" # Cổng khác 3307; cũng có thể bỏ nếu chỉ dùng nội bộ
+    volumes:
+      - db_consumer_data:/var/lib/mysql
+      - ./database/consumer_schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    networks:
+      - evnet
+
+  # phpMyAdmin cho PROVIDER
+  phpmyadmin_provider:
+    image: phpmyadmin/phpmyadmin
+    container_name: ev-phpmyadmin-provider
+>>>>>>> b2b62b30502933ce69778733bd55f2cea706a8e3
     environment:
       PMA_HOST: db_provider
       PMA_USER: root
@@ -118,6 +252,7 @@ services:
     networks:
       - evnet
 
+<<<<<<< HEAD
   # =====================================================
   # 3. CONSUMER SERVICE + DB
   # =====================================================
@@ -165,6 +300,12 @@ services:
   phpmyadmin_consumer:
     image: phpmyadmin/phpmyadmin
     container_name: phpmyadmin_consumer
+=======
+  # phpMyAdmin cho CONSUMER
+  phpmyadmin_consumer:
+    image: phpmyadmin/phpmyadmin
+    container_name: ev-phpmyadmin-consumer
+>>>>>>> b2b62b30502933ce69778733bd55f2cea706a8e3
     environment:
       PMA_HOST: db_consumer
       PMA_USER: root
@@ -177,6 +318,7 @@ services:
       - evnet
 
   # =====================================================
+<<<<<<< HEAD
   # 4. AUTH SERVICE + DB + GATEWAY
   # =====================================================
   db_auth:
@@ -242,6 +384,46 @@ services:
       - evnet
 
 
+=======
+  # 3. GATEWAY + AUTH SERVICE
+  # =====================================================
+
+  gateway:
+    build:
+      context: ./gateway
+    container_name: gateway
+    ports:
+      - "8006:80"
+    volumes:
+      - ./gateway:/var/www/html
+    environment:
+      DB_HOST: host.docker.internal
+      DB_USER: root
+      DB_PASS: ""
+      DB_NAME: ev-data-analytics-marketplace
+      DOCKER_ENV: "1"
+    networks:
+      - evnet
+
+  auth-service:
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile
+    container_name: auth-service
+    ports:
+      - "8007:80"
+    volumes:
+      - ./auth-service:/var/www/html
+    environment:
+      DB_HOST: host.docker.internal
+      DB_USER: root
+      DB_PASS: ""
+      DB_NAME: ev-data-analytics-marketplace
+      DOCKER_ENV: "1"
+    networks:
+      - evnet
+
+>>>>>>> b2b62b30502933ce69778733bd55f2cea706a8e3
 # =====================================================
 # NETWORKS + VOLUMES
 # =====================================================
@@ -252,7 +434,13 @@ networks:
     driver: bridge
 
 volumes:
+<<<<<<< HEAD
   db_admin_data:
   db_provider_data:
   db_consumer_data:
   db_auth_data:
+=======
+  db_data:
+  db_provider_data:
+  db_consumer_data:
+>>>>>>> b2b62b30502933ce69778733bd55f2cea706a8e3

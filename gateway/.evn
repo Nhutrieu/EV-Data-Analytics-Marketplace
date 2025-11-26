@@ -1,0 +1,3 @@
+ADMIN_SERVICE_URL=http://admin-service
+CONSUMER_SERVICE_URL=http://consumer-service
+PROVIDER_SERVICE_URL=http://provider-service

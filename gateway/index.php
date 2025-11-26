@@ -1,4 +1,5 @@
 <?php
+<<<<<<< HEAD
 header("Content-Type: application/json");
 
 $authServiceUrl = "http://auth-service:80/public/index.php?action=";
@@ -20,3 +21,16 @@ if (in_array($path, ['login', 'register'])) {
     echo json_encode(['message'=>'Route not found']);
 }
 ?>
+=======
+session_start();
+
+// Nếu người dùng đã đăng nhập, chuyển thẳng sang home_logged.php
+if (isset($_SESSION['user'])) {
+    header("Location: src/pages/home_logged.php");
+    exit;
+}
+
+// Nếu chưa đăng nhập, chuyển sang trang home.php (trang giới thiệu / đăng nhập)
+header("Location: src/pages/home.php");
+exit;
+>>>>>>> b2b62b30502933ce69778733bd55f2cea706a8e3

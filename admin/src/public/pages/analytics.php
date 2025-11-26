@@ -73,6 +73,7 @@ new Chart(ctx, {
     }
 });
 </script>
+<<<<<<< HEAD
 
 <h3 style="margin-top:40px;">🔥 Top 10 Dataset được mua nhiều nhất</h3>
 <table border="1" cellpadding="8" cellspacing="0" style="border-collapse:collapse;width:100%;background:#161b22;color:white;">
@@ -89,3 +90,5 @@ new Chart(ctx, {
         </tr>
     <?php endforeach; ?>
 </table>
+=======
+>>>>>>> b2b62b30502933ce69778733bd55f2cea706a8e3
