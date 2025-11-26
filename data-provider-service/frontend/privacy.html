@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EV Data Marketplace - Bảo mật & Ẩn danh</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">⚡ EV DATA</div>
+                <h2>Data Provider Portal</h2>
+            </div>
+            <ul class="sidebar-nav">
+                <li><a href="data.html" class="nav-link"><i class="fas fa-database"></i> Quản lý Dữ liệu</a></li>
+                <li><a href="pricing.html" class="nav-link"><i class="fas fa-tag"></i> Chính sách & Giá</a></li>
+                <li><a href="revenue.html" class="nav-link"><i class="fas fa-money-bill-wave"></i> Doanh thu</a></li>
+                <li><a href="privacy.html" class="nav-link active"><i class="fas fa-shield-alt"></i> Bảo mật</a></li>
+                <li><a href="settings.html" class="nav-link"><i class="fas fa-cog"></i> Cài đặt</a></li>
+                <li><a href="http://localhost:8006/src/pages/home.php" class="nav-link"><i class="fas fa-cog"></i> Đăng xuất</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main content -->
+        <main class="main-content">
+            <header class="content-header">
+                <div class="header-left">
+                    <h1>Bảo mật & Ẩn danh hóa dữ liệu</h1>
+                    <p>Thiết lập cách dữ liệu được ẩn danh và chia sẻ</p>
+                </div>
+
+            </header>
+
+            <div class="content-area">
+                <!-- Giới thiệu -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Chính sách bảo mật dữ liệu</div>
+                    </div>
+                    <div style="padding: 1rem;">
+                        <p style="color: var(--gray-light);">
+                            Các cài đặt này sẽ áp dụng cho tất cả dữ liệu mà bạn đưa lên marketplace:
+                        </p>
+                        <ul style="color: var(--gray-light); margin-left: 1.5rem;">
+                            <li><strong>Ẩn danh hóa dữ liệu</strong> – loại bỏ thông tin định danh cá nhân (biển số,
+                                VIN, số điện thoại…)</li>
+                            <li><strong>Chuẩn tuân thủ</strong> – ví dụ như GDPR (EU), CCPA (California)</li>
+                            <li><strong>Thời gian lưu trữ</strong> – dữ liệu chỉ được giữ trong một khoảng thời gian
+                                nhất định</li>
+                            <li><strong>Kiểm soát truy cập</strong> – chỉ admin, khách đã xác thực, hay mọi người (dưới
+                                dạng ẩn danh)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Form cài đặt bảo mật -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Thiết lập Bảo mật & Ẩn danh</div>
+                    </div>
+                    <form id="privacy-form">
+                        <div class="form-group">
+                            <label class="form-label">
+                                <input type="checkbox" id="anonymize-data" style="margin-right: .5rem;">
+                                Ẩn danh hóa dữ liệu trước khi chia sẻ
+                            </label>
+                            <small style="color: var(--gray-light); display:block; margin-top: .25rem;">
+                                Khi bật, hệ thống sẽ loại bỏ hoặc mã hóa các trường định danh cá nhân trước khi cho phép
+                                tải xuống / truy cập.
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Chuẩn quyền riêng tư áp dụng *</label>
+                            <select id="privacy-standard" class="form-control" required>
+                                <option value="GDPR">GDPR (Châu Âu)</option>
+                                <option value="CCPA">CCPA (California)</option>
+                                <option value="GDPR+CCPA">GDPR + CCPA</option>
+                                <option value="custom">Tuỳ chỉnh nội bộ</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Thời gian lưu trữ dữ liệu (tháng)</label>
+                            <input type="number" id="retention-months" class="form-control" min="0" value="12">
+                            <small style="color: var(--gray-light); display:block; margin-top: .25rem;">
+                                0 = không giới hạn. Ví dụ 12 nghĩa là dữ liệu cũ hơn 12 tháng nên được xóa hoặc lưu trữ
+                                lạnh.
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Chế độ truy cập dữ liệu *</label>
+                            <select id="access-control" class="form-control" required>
+                                <option value="provider-only">Chỉ mình tôi (Provider)</option>
+                                <option value="verified-buyers">Chỉ khách đã xác thực / đã mua</option>
+                                <option value="public-anonymized">Công khai nhưng chỉ bản ẩn danh</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Lưu Cài đặt Bảo mật
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/privacy.js"></script>
+</body>
+
+</html>

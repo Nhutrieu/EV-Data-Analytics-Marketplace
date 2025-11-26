@@ -1,0 +1,5 @@
+payment/
+api/ai-chat.php
+/vendor
+composer.lock
+composer.json

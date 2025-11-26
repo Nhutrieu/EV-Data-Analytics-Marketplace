@@ -1,0 +1,258 @@
+version: '3.9'
+
+services:
+
+  # =====================================================
+  # 1. ADMIN DB + ADMIN SERVICE
+  # =====================================================
+  db_admin:
+    image: mysql:8.0
+    container_name: dm_db_admin
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: data_marketplace
+      MYSQL_USER: dmuser
+      MYSQL_PASSWORD: dmpass
+    volumes:
+      - ./db/init_admin_service.sql:/docker-entrypoint-initdb.d/init_admin_service.sql
+      - db_admin_data:/var/lib/mysql
+    ports:
+      - "3310:3306"
+    networks:
+      - admin_network
+      - evnet
+
+  admin_service:
+    build:
+      context: ./admin
+      dockerfile: Dockerfile
+    container_name: admin_service
+    restart: always
+    depends_on:
+      - db_admin
+    volumes:
+      - ./admin/src:/var/www/html
+    ports:
+      - "8004:80"
+    environment:
+      DB_HOST: db_admin
+      DB_USER: dmuser
+      DB_PASS: dmpass
+      DB_NAME: data_marketplace
+      PROVIDER_DB_HOST: db_provider
+      PROVIDER_DB_NAME: ev_data_marketplace
+      PROVIDER_DB_USER: ev_user
+      PROVIDER_DB_PASS: ev_pass
+      ENCRYPT_KEY: change_this_32_chars_min
+    networks:
+      - admin_network
+      - evnet
+    user: "33:33"
+
+  phpmyadmin_admin:
+    image: phpmyadmin/phpmyadmin:5.2.1
+    container_name: phpmyadmin_admin
+    restart: always
+    environment:
+      PMA_HOST: db_admin
+      PMA_USER: dmuser
+      PMA_PASSWORD: dmpass
+    ports:
+      - "8081:80"
+    depends_on:
+      - db_admin
+    networks:
+      - admin_network
+
+  # =====================================================
+  # 2. PROVIDER SERVICE + DB
+  # =====================================================
+  db_provider:
+    image: mysql:8.0
+    container_name: ev_db_provider
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: ev_data_marketplace
+      MYSQL_USER: ev_user
+      MYSQL_PASSWORD: ev_pass
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_provider_data:/var/lib/mysql
+      - ./database/provider_schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    networks:
+      - evnet
+
+  ev_provider:
+    build:
+      context: ./data-provider-service
+      dockerfile: Dockerfile
+    container_name: ev_provider
+    ports:
+      - "8009:80"
+    volumes:
+      - ./data-provider-service:/var/www/html
+    environment:
+      DB_HOST: db_provider
+      DB_NAME: ev_data_marketplace
+      DB_USER: ev_user
+      DB_PASS: ev_pass
+    depends_on:
+      - db_provider
+    networks:
+      - evnet
+
+  phpmyadmin_provider:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin_provider
+    environment:
+      PMA_HOST: db_provider
+      PMA_USER: root
+      PMA_PASSWORD: root123
+    ports:
+      - "8082:80"
+    depends_on:
+      - db_provider
+    networks:
+      - evnet
+
+  # =====================================================
+  # 3. CONSUMER SERVICE + DB
+  # =====================================================
+  db_consumer:
+    image: mysql:8.0
+    container_name: ev_db_consumer
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: ev_analytics
+      MYSQL_USER: ev_user
+      MYSQL_PASSWORD: ev_pass
+    ports:
+      - "3308:3306"
+    volumes:
+      - db_consumer_data:/var/lib/mysql
+      - ./database/consumer_schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    networks:
+      - evnet
+
+  ev_consumer:
+    build:
+      context: ./data-consumer-service
+      dockerfile: Dockerfile
+    container_name: ev_consumer
+    ports:
+      - "8008:80"
+    volumes:
+      - ./data-consumer-service:/var/www/html
+    environment:
+      DB_HOST: db_consumer
+      DB_NAME: ev_analytics
+      DB_USER: ev_user
+      DB_PASS: ev_pass
+      PROVIDER_DB_HOST: db_provider
+      PROVIDER_DB_NAME: ev_data_marketplace
+      PROVIDER_DB_USER: ev_user
+      PROVIDER_DB_PASS: ev_pass
+    depends_on:
+      - db_consumer
+      - db_provider
+    networks:
+      - evnet
+
+  phpmyadmin_consumer:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin_consumer
+    environment:
+      PMA_HOST: db_consumer
+      PMA_USER: root
+      PMA_PASSWORD: root123
+    ports:
+      - "8083:80"
+    depends_on:
+      - db_consumer
+    networks:
+      - evnet
+
+  # =====================================================
+  # 4. AUTH SERVICE + DB + GATEWAY
+  # =====================================================
+  db_auth:
+    image: mysql:8.0
+    container_name: ev_db_auth
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: ev_marketplace
+    ports:
+      - "3309:3306"
+    volumes:
+      - db_auth_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - evnet
+
+  phpmyadmin_auth:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin_auth
+    environment:
+      PMA_HOST: db_auth
+      PMA_USER: root
+      PMA_PASSWORD: root
+    ports:
+      - "8085:80"
+    depends_on:
+      - db_auth
+    networks:
+      - evnet
+
+  gateway:
+    build: ./gateway
+    container_name: gateway
+    restart: always
+    ports:
+      - "8006:80"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - evnet
+
+  auth_service:
+    build: ./auth-service
+    container_name: auth_service
+    restart: always
+    ports:
+      - "8007:80"
+    environment:
+      DB_HOST: db_auth
+      DB_NAME: ev_marketplace
+      DB_USER: root
+      DB_PASS: root
+    depends_on:
+      gateway:
+        condition: service_healthy
+      db_auth:
+        condition: service_started
+    networks:
+      - evnet
+
+
+# =====================================================
+# NETWORKS + VOLUMES
+# =====================================================
+networks:
+  admin_network:
+    driver: bridge
+  evnet:
+    driver: bridge
+
+volumes:
+  db_admin_data:
+  db_provider_data:
+  db_consumer_data:
+  db_auth_data:
