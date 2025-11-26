@@ -52,11 +52,7 @@ $page = $_GET['page'] ?? 'home';
 ">
     <div>🏛️ Bảng điều khiển Admin - Chợ Dữ Liệu</div>
 
-<<<<<<< HEAD
     <a href="http://localhost:8007/home.php" 
-=======
-    <a href="http://localhost:8006/src/pages/home.php" 
->>>>>>> b2b62b30502933ce69778733bd55f2cea706a8e3
        style="
            padding:10px 18px;
            background:linear-gradient(135deg,#ff4b4b,#c62828);

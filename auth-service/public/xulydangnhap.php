@@ -58,7 +58,7 @@ if ($stmt->rowCount() > 0) {
                     'username' => $prov['username'],
                     'role' => 'provider'
                 ];
-                header('Location: http://localhost:8009/frontend/data.html');
+                header('Location: http://localhost:8008/frontend/data.html');
                 exit;
             }
         }
@@ -74,7 +74,7 @@ if ($stmt->rowCount() > 0) {
                     'username' => $consumer['username'],
                     'role' => 'user'
                 ];
-                header('Location: http://localhost:8008/public/consumer.html');
+                header('Location: http://localhost:8009/public/consumer.html');
                 exit;
             }
         }

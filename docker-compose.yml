@@ -91,7 +91,7 @@ services:
       dockerfile: Dockerfile
     container_name: ev_provider
     ports:
-      - "8009:80"
+      - "8008:80"
     volumes:
       - ./data-provider-service:/var/www/html
     environment:
@@ -144,7 +144,7 @@ services:
       dockerfile: Dockerfile
     container_name: ev_consumer
     ports:
-      - "8008:80"
+      - "8009:80"
     volumes:
       - ./data-consumer-service:/var/www/html
     environment:
